@@ -40,7 +40,6 @@ def scinder():
     taglist.pop(taglist.index(element))
     efface(element[3])
 
-
 if __name__ == "__main__":
     taglist=[]
     cree_fenetre(400, 400)
