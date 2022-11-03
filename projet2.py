@@ -1,12 +1,12 @@
 from upemtk import *
 from math import *
 
-def circle():
+def circle(couleur):
     global x, y, rayon, taglist
-    tag = cercle(x, y, rayon, "gray", "", 1)
+    tag = cercle(x, y, rayon, "gray", couleur, 1)
     taglist.append([x, y, rayon, tag])
 
-def scinder():
+def scinder(couleur):
     global x, y, taglist, element
     rayon1 = round(element[2]-sqrt(distance))
     tag = cercle(x, y, rayon1, "black", "lime", 1)
@@ -34,7 +34,7 @@ def scinder():
 
     rayon2 = round(element[2]-round(element[2]-sqrt(distance)))
 
-    tag = cercle(x1, y1, rayon2, "black", "lime", 1)
+    tag = cercle(x1, y1, rayon2, "black", couleur, 1)
     taglist.append([x1, y1, rayon2, tag])
 
     taglist.pop(taglist.index(element))
@@ -42,8 +42,9 @@ def scinder():
 
 if __name__ == "__main__":
     taglist=[]
-    cree_fenetre(400, 400)
+    cree_fenetre(1900, 700)
     rayon = 50
+    tour="lime"
     while True:
         x, y, m = attente_clic()
         intersection = 0
@@ -52,11 +53,20 @@ if __name__ == "__main__":
             if sqrt(distance) < element[2]+rayon and sqrt(distance) > element[2]:
                 intersection += 1
             elif sqrt(distance) < element[2]:
-                scinder()
+                if tour=="lime":
+                    scinder(red)
+                else:
+                    scinder(lime)
                 intersection += 1
                 break
 
         if intersection == 0:
-            circle()
+            circle(tour)
         mise_a_jour()
+        
+        if tour=="lime":
+            tour="red"
+        else:
+            tour="lime"
+        
     ferme_fenetre()
