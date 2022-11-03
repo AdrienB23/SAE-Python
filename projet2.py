@@ -9,7 +9,7 @@ def circle(couleur):
 def scinder(couleur):
     global x, y, taglist, element
     rayon1 = round(element[2]-sqrt(distance))
-    tag = cercle(x, y, rayon1, "black", "lime", 1)
+    tag = cercle(x, y, rayon1, "black", couleur, 1)
     taglist.append([x, y, rayon1, tag])
 
     if x - element[0] == 0:
@@ -42,25 +42,37 @@ def scinder(couleur):
 
 if __name__ == "__main__":
     taglist=[]
-    cree_fenetre(1900, 700)
+    cree_fenetre(1350, 700)
     rayon = 50
     tour="lime"
+    rectangle(50,100,1300,650)
+    marque(50,100)
+    marque(50, 650)
+    marque(1300,100)
+    marque(1300,650)
     while True:
+        if tour=="lime":
+            joueur="Tour du Joueur 1"
+        else:
+            joueur="Tour du Joueur 2"
+        texte(475, 50, joueur, "black", "nw", "Purisa", 24, "Joueur")
+        
         x, y, m = attente_clic()
+        
         intersection = 0
-        for element in taglist:
+        for element in taglist: # Division des cercles
             distance = (x-element[0])**2 + (y-element[1])**2
             if sqrt(distance) < element[2]+rayon and sqrt(distance) > element[2]:
                 intersection += 1
             elif sqrt(distance) < element[2]:
                 if tour=="lime":
-                    scinder(red)
+                    scinder("red")
                 else:
-                    scinder(lime)
+                    scinder("lime")
                 intersection += 1
                 break
-
-        if intersection == 0:
+        
+        if intersection == 0 and 50<=x<=1300 and 100<=y<=650 :
             circle(tour)
         mise_a_jour()
         
@@ -69,4 +81,6 @@ if __name__ == "__main__":
         else:
             tour="lime"
         
+        efface("Joueur")
+    
     ferme_fenetre()
