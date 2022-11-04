@@ -8,7 +8,7 @@ def circle(couleur):
         taglist_lime.append([x, y, rayon, tag])
     else:
         taglist_red.append([x, y, rayon, tag])
-        
+    
 def scinder(couleur):
     global x, y, taglist_lime, taglist_red, element
     rayon1 = round(element[2]-sqrt(distance))
@@ -55,7 +55,6 @@ if __name__ == "__main__":
 #---------Initialisation des variables---------#
     taglist_lime=[]
     taglist_red=[]
-    rayon = 50
     tour="lime"
     rectangle(50,100,1300,650)
     #rectangle(100,150,1250,600,)
@@ -72,8 +71,19 @@ if __name__ == "__main__":
         while x<50 or x>1300 or y<100 or y>650:
             x, y, m = attente_clic()
 ###---------Division et ajout des cercles---------###
+        rayon = 50
         intersection = 0
         annulation=False
+#---------Changement de position lorsque le clic est trop près de la bordure---------#
+        if 50<=x<100:
+            x=100
+        elif 1250<x<=1300:
+            x=1250
+        if 100<=y<150:
+            y=150
+        elif 600<y<=650:
+            y=600
+
 #---------Division des cercles rouges---------#
         if tour=="lime":
             for i in range(len(taglist_red)):
@@ -97,7 +107,7 @@ if __name__ == "__main__":
                     intersection += 1
                     break
 #---------Ajout des cercles---------#
-        if intersection == 0:
+        if intersection == 0 and 100<=x<=1250 and 150<=y<=600:
             circle(tour)
 
         mise_a_jour()
