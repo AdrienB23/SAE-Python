@@ -13,12 +13,12 @@ def detection_tour(tour, listeJoueur, numero_tour):
     texte(50, 50,"Tour : " + listeJoueur[tour],"lightcyan", "w",police="",tag="tour")
     texte(1280-50, 50, "Tour n° "+ str(numero_tour) + "/20", "lightcyan","e",police="",tag="tour")
 
-def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon, tour):
+def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
     circle = cercle(x, y, rayon, "black", couleur, 1)
     if couleur == "mediumseagreen":
-        liste_cercle_vert.append([x, y, rayon, circle, tour])
+        liste_cercle_vert.append([x, y, rayon, circle])
     else:
-        liste_cercle_violet.append([x, y, rayon, circle, tour])
+        liste_cercle_violet.append([x, y, rayon, circle])
 
 # def actualiser_score(scores):
 #     efface("tour2")
@@ -96,7 +96,7 @@ def main():
 
 
             if intersection_cercle == 0:
-                cerkle(x, y, couleurJoueur, tour, liste_cercle_vert, liste_cercle_violet, rayon)
+                cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
 
                 #scores[tour] += round(pi*(rayon**2))
 
