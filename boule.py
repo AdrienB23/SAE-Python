@@ -59,7 +59,7 @@ def main():
                 x=1170
             if 100<=y<150:
                 y=150
-            elif 620<y<=570:
+            elif 620<y<=670:
                 y=20
         
             if tour == 1:
