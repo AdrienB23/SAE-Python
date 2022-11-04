@@ -55,12 +55,12 @@ def main():
             
             if 50<=x<100:
                 x=100
-            elif 1250<x<=1300:
-                x=1250
+            elif 1170<x<=1230:
+                x=1170
             if 100<=y<150:
                 y=150
-            elif 600<y<=650:
-                y=600
+            elif 620<y<=570:
+                y=20
         
             if tour == 1:
                 numero_tour += 1
