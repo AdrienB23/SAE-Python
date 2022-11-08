@@ -8,10 +8,13 @@ def fond():
     rectangle(-1,-1,1280,720,"darkcyan","darkcyan")
     rectangle(50,100,1280-50,720-50,"floralwhite","floralwhite")
 
+def aire_cercle(rayon):
+	return pi*rayon**2
+
 def detection_tour(tour, listeJoueur, numero_tour):
     efface("tour")
     texte(50, 50,"Tour : " + listeJoueur[tour],"lightcyan", "w",police="",tag="tour")
-    texte(1280-50, 50, "Tour n° "+ str(numero_tour) + "/20", "lightcyan","e",police="",tag="tour")
+    texte(1280-50, 50, "Tour n° "+ str(numero_tour) + "/5", "lightcyan","e",police="",tag="tour")
 
 def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
     circle = cercle(x, y, rayon, "black", couleur, 1)
@@ -30,8 +33,9 @@ def main():
     # LargeurFenetre = 1280, HauteurFenetre = 720, tailleTerrain = 50
     listeJoueur = ["Joueur 1","Joueur 2"]
     couleurJoueur = ["mediumseagreen", "mediumpurple"]
-    scores = [0, 0]
     fond()
+    rectangle(1130, 680, 1230, 715, "black","red", 1, "Quitter")
+    texte(1143, 685, "Quitter", "white", "nw", taille="16")
 
     liste_cercle_violet = []
     liste_cercle_vert = []
@@ -49,9 +53,14 @@ def main():
 
         #actualiser_score(scores)
         if type_ev == "ClicGauche":
-            x, y = clic_x(), clic_y()
+            x, y = clic_x(ev), clic_y(ev)
+            
+            if 1130<=x<=1230 and 680<=y<=715:
+                sleep(0.5)
+                break
+
             while x<50 or x>1230 or y<100 or y>670:
-                x, y = clic_x(), clic_y()
+                x, y, m = attente_clic()
             
             if 50<=x<100:
                 x=100
@@ -60,7 +69,7 @@ def main():
             if 100<=y<150:
                 y=150
             elif 620<y<=670:
-                y=20
+                y=620
         
             if tour == 1:
                 numero_tour += 1
@@ -92,8 +101,7 @@ def main():
                     elif sqrt(distance) < liste_cercle_vert[i][2]:
                         scinder("lime") # A modifier
                         intersection_cercle += 1
-                        break
-
+                        break0
 
             if intersection_cercle == 0:
                 cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
@@ -102,8 +110,23 @@ def main():
 
             tour = (tour+1) % 2
 
-        if type_ev == "Quitte" or numero_tour == 21:
-            break   
+            if numero_tour == 6:
+                score_vert = 0
+                score_violet = 0
+                for element in liste_cercle_vert:
+                    score_vert += aire_cercle(element[2])
+                for element in liste_cercle_violet:
+                    score_violet += aire_cerle(element[2])
+                if score_vert > score_violet:
+                    texte(640, 50, "Le Joueur Vert gagne", "white", "center")
+                elif score_violet < score_vert:
+                    texte(640, 50, "Le Joueur Violet gagne", "white", "center")
+                else:
+                   texte(640, 50, "Egalité", "white", "center")
+                
+                if 1130<=x<=1230 and 680<=y<=715:
+                    sleep(0.5)
+                    break
 
         mise_a_jour()
 
@@ -111,3 +134,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
