@@ -49,9 +49,9 @@ def main():
 
         #actualiser_score(scores)
         if type_ev == "ClicGauche":
-            x, y = attente_clic()
+            x, y = clic_x(), clic_y()
             while x<50 or x>1230 or y<100 or y>670:
-                x, y = attente_clic()
+                x, y = clic_x(), clic_y()
             
             if 50<=x<100:
                 x=100
