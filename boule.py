@@ -7,6 +7,8 @@ def fond():
     cree_fenetre(1280, 720)
     rectangle(-1,-1,1280,720,"darkcyan","darkcyan")
     rectangle(50,100,1280-50,720-50,"floralwhite","floralwhite")
+    rectangle(1130, 680, 1230, 715, "black","red", 1, "Quitter")
+    texte(1143, 685, "Quitter", "white", "nw", taille="16")
 
 def aire_cercle(rayon):
 	return pi*rayon**2
@@ -34,8 +36,6 @@ def main():
     listeJoueur = ["Joueur 1","Joueur 2"]
     couleurJoueur = ["mediumseagreen", "mediumpurple"]
     fond()
-    rectangle(1130, 680, 1230, 715, "black","red", 1, "Quitter")
-    texte(1143, 685, "Quitter", "white", "nw", taille="16")
 
     liste_cercle_violet = []
     liste_cercle_vert = []
@@ -56,7 +56,6 @@ def main():
             x, y = clic_x(ev), clic_y(ev)
             
             if 1130<=x<=1230 and 680<=y<=715:
-                sleep(0.5)
                 break
 
             while x<50 or x>1230 or y<100 or y>670:
@@ -71,17 +70,13 @@ def main():
             elif 620<y<=670:
                 y=620
         
-            if tour == 1:
-                numero_tour += 1
-        
             intersection_cercle = 0
 
         
 #---------Division des cercles rouges---------#
 
-            if listeJoueur[tour] == "Joueur 1":
+            if tour == 0:
                 for i in range(len(liste_cercle_violet)):
-                    element = liste_cercle_violet[i]
                     distance = (x-liste_cercle_violet[i][0])**2 + (y-liste_cercle_violet[i][1])**2
                     if sqrt(distance) < liste_cercle_violet[i][2] + rayon and sqrt(distance) > liste_cercle_violet[i][2]:
                         intersection_cercle += 1
@@ -92,16 +87,15 @@ def main():
                     
 #---------Division des cercles verts---------#
 
-            if listeJoueur[tour] == "Joueur 2":
+            if tour == 1:
                 for i in range(len(liste_cercle_vert)):
-                    element = liste_cercle_vert[i]
                     distance = (x-liste_cercle_vert[i][0])**2 + (y-liste_cercle_vert[i][1])**2
                     if sqrt(distance) < liste_cercle_vert[i][2] + rayon and sqrt(distance) > liste_cercle_vert[i][2]:
                         intersection_cercle += 1
                     elif sqrt(distance) < liste_cercle_vert[i][2]:
                         scinder("lime") # A modifier
                         intersection_cercle += 1
-                        break0
+                        break
 
             if intersection_cercle == 0:
                 cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
@@ -110,28 +104,27 @@ def main():
 
             tour = (tour+1) % 2
 
-            if numero_tour == 6:
+            if numero_tour == 6 and tour == 1:
                 score_vert = 0
                 score_violet = 0
                 for element in liste_cercle_vert:
                     score_vert += aire_cercle(element[2])
                 for element in liste_cercle_violet:
-                    score_violet += aire_cerle(element[2])
+                    score_violet += aire_cercle(element[2])
                 if score_vert > score_violet:
                     texte(640, 50, "Le Joueur Vert gagne", "white", "center")
                 elif score_violet < score_vert:
                     texte(640, 50, "Le Joueur Violet gagne", "white", "center")
                 else:
                    texte(640, 50, "Egalité", "white", "center")
-                
-                if 1130<=x<=1230 and 680<=y<=715:
-                    sleep(0.5)
-                    break
-
+                break
+            
+            if tour == 1:
+                numero_tour += 1
+        
         mise_a_jour()
 
     ferme_fenetre()
 
 if __name__ == '__main__':
     main()
-
