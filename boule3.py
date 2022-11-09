@@ -34,7 +34,7 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
         liste_cercle_vert.append([x2, y2, rayon2, tag2])
         liste_cercle_vert.pop(liste_cercle_vert.index(element))
     else:
-        liste_cercle_violet.append([x2, y2, rayon2, tag2])
+        liste_cercle_violet.append([x2, y2, rayon2, tag2])  
         liste_cercle_violet.append([x, y, rayon1, tag1])
         liste_cercle_violet.pop(liste_cercle_violet.index(element))
     efface(element[3])
@@ -73,8 +73,7 @@ def main():
     menu()
 
     x, y, z = attente_clic()
-    print(x, y)
-    while (x<250 or 550<x<600 or x>900) and (y<200 or y>300):
+    while x<250 or x>550 or y<200 or y>300:
         x, y, z = attente_clic()
     if 250<=x<=550 and 200<=y<=300:
         efface("Menu")
