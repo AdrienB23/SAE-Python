@@ -68,6 +68,13 @@ def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
     else:
         liste_cercle_violet.append([x, y, rayon, circle])
 
+def calcul_score(a, b, score, tour):
+    for i in range(len(a)-1, -1, -1):
+        element=a[i]
+        score[tour] += ( element[2]**2 * pi )
+
+
+
 def main():
     cree_fenetre(1280, 720)
     menu()
@@ -86,6 +93,7 @@ def main():
     tour, numero_tour = 0, 1
     rayon = 50
     nb_max_tour = 5
+    score=[0, 0]
 
     a, b = liste_cercle_violet, liste_cercle_vert
 
@@ -97,6 +105,10 @@ def main():
 
         if type_ev == "ClicGauche":
             x, y = clic_x(ev), clic_y(ev)
+
+            if 1130<=x<=1230 and 680<=y<=715:
+                break
+
             while x<50 or x>1230 or y<100 or y>670:
                 x, y, m = attente_clic()
             if 50<=x<100:
@@ -127,6 +139,11 @@ def main():
 
             if intersection_cercle == 0:
                 cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
+
+            calcul_score(a, b, score, tour)
+            score[0] = round(score[0])
+            score[1] = round(score[1])
+            print(score)
 
             tour = (tour+1) % 2
 
