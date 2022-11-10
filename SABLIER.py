@@ -81,10 +81,10 @@ def clic_hors_bordure(x, y):
 def detection_tour(tour, listeJoueur, numero_tour, nb_max_tour):
     """ 
     Affiche les textes indiquant à qui est le tour et le nombre de tour que les joueurs ont effectués où :
-    tour : indique à quel joueur c'est au tour de jouer (valeur en int : '0' ou '1' pour respectivement Joueur 1 ou Joueur 2)
-    listeJoueur : indique la liste des joueurs qui jouent (valeur en str)
-    numero_tour : indique le nombre de tours joués (valeur en int)
-    nb_max_tour : indique le nombre maximum de tours (valeur en int)
+    tour : indique à quel joueur c'est au tour de jouer (paramètre : int) (valeur : '0' ou '1' pour respectivement Joueur 1 ou Joueur 2)
+    listeJoueur : indique la liste des joueurs qui jouent (paramètre : str)
+    numero_tour : indique le nombre de tours joués (paramètre : int)
+    nb_max_tour : indique le nombre maximum de tours (paramètre : int)
     """
     efface("tour")
     texte(50, 50,"Tour : " + listeJoueur[tour],"lightcyan", "w",police="",tag="tour")
