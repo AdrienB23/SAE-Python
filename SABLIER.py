@@ -3,7 +3,7 @@ from random import *
 from time import *
 from math import *
 
-def fond_menu():
+def fond_menu(): # Affiche le menu du jeu
     rectangle(2, 2, 1277, 150, "white", epaisseur=5, tag="Menu")
     texte(640, 75, "Bataille des boules", "white", "center", taille=50, tag="Menu")
 
@@ -14,7 +14,7 @@ def fond_menu():
     texte(640, 450, "Options", "white", "center", taille=40, tag="Menu")
     mise_a_jour() 
 
-def fond_jeu(): 
+def fond_jeu(): # Affiche les éléments du terrains de jeu
     rectangle(50,100,1280-50,720-50,"floralwhite","floralwhite")
 
     rectangle(1130, 680, 1230, 715, "black","red", 1, "Quitter")
@@ -24,7 +24,7 @@ def fond_jeu():
     texte(0,0,"",tag="tour2")
     mise_a_jour()
 
-def options():
+def options(): # Affiche le menu des options pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
     efface("Options")
     rectangle(2, 2, 1277, 150, "white", epaisseur=5, tag="Options")
     texte(640, 75, "Options", "white", "center", taille=50, tag="Options")
@@ -37,11 +37,19 @@ def options():
     mise_a_jour()
 
 def fond_sablier(temps, t1):
+    """ 
+    Affiche un temps qui s'écoule où 'temps' est le temps maximum que doit prendre un jouer pour jouer
+    et 't1' le temps qui augmente tant que le joueur ne joue pas.
+    """
     efface("Temps")
     texte(640, 80, str(round(temps-t1, 1)), "white", "center", taille = 20, tag = "Temps")
     mise_a_jour()
 
-def clique(Sablier):
+def choix_variante(Sablier):
+    """ 
+    Renvoie les coordonnées du clic et fait appliquer au programme la variante 'Sablier' 
+    si elle a été sélectionnée dans le menu.
+    """
     if Sablier:
         temps=time() + 5
         t1 = time()
@@ -63,16 +71,26 @@ def clique(Sablier):
         return x, y
 
 def clic_hors_bordure(x, y):
+    """ 
+    Redemande au joueur de cliquer dans la zone lorsque les coordonnées 'x' et 'y' ne sont pas respectées.
+    """
     while x<50 or x>1230 or y<100 or y>670:
         x, y, m = attente_clic()
     return x, y
 
 def detection_tour(tour, listeJoueur, numero_tour, nb_max_tour):
+    """ 
+    Affiche les textes indiquant à qui est le tour et le nombre de tour que les joueurs ont effectués où :
+    tour : indique à quel joueur c'est au tour de jouer (valeur en int : '0' ou '1' pour respectivement Joueur 1 ou Joueur 2)
+    listeJoueur : indique la liste des joueurs qui jouent (valeur en str)
+    numero_tour : indique le nombre de tours joués (valeur en int)
+    nb_max_tour : indique le nombre maximum de tours (valeur en int)
+    """
     efface("tour")
     texte(50, 50,"Tour : " + listeJoueur[tour],"lightcyan", "w",police="",tag="tour")
     texte(1280-50, 50, "Tour n° "+ str(numero_tour) + "/"+str(nb_max_tour), "lightcyan","e",police="",tag="tour")
 
-def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tour, couleurJoueur):
+def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tour, couleurJoueur): # Permet la division des cercles lorsque un joueur clique sur le cercle adverse.
     tour = (tour+1) % 2
     rayon1 = element[2]-sqrt(distance)
     rayon2 = element[2]-rayon1
@@ -108,14 +126,14 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
         liste_cercle_violet.pop(liste_cercle_violet.index(element))
     efface(element[3])
 
-def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
+def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon): # Permet de placer les cercles.
     circle = cercle(x, y, rayon, "black", couleur, 1)
     if couleur == "mediumseagreen":
         liste_cercle_vert.append([x, y, rayon, circle])
     else:
         liste_cercle_violet.append([x, y, rayon, circle])
 
-def calcul_score(a, b, score, tour):
+def calcul_score(a, b, score, tour): # Permet de calculer les scores.
     for i in range(len(a)-1, -1, -1):
         element=a[i]
         score[tour] += ( element[2]**2 * pi )
@@ -167,7 +185,7 @@ def main():
     a, b = liste_cercle_violet, liste_cercle_vert
     
     while numero_tour < nb_max_tour+1:
-        x, y = clique(Sablier)
+        x, y = choix_variante(Sablier)
         detection_tour(tour, listeJoueur, numero_tour, nb_max_tour)
         if x == False:
             if tour == 1:
