@@ -4,6 +4,7 @@ Nous avons choisi d'implémenter la variante "Sablier" à notre programme puisqu
 Organisation du programme et choix technique :
 Le programme a été créé de façon progressive, c'est-à-dire qu'au fur et à mesure nous avons rajouté les différentes fonctions nécessaires à la création du jeu mais nous n'avons pas réellement eu un ordre de priorité lors de son élaboration. Nous avons regroupé par thèmes nos différentes fonctions pour une meilleure lisibilité. Les fonctions ont été pensé pour essayer d'atteindre la plus petite complexité à cause du programme qui est tout de même assez lourd mais fonctionnel.  
 Nous n'avons pas tout mis dans des fonctions comme par exemples, les différentes variables qui sont initialiser au début d'une boucle. Nous avons pris le choix d'utiliser une boucle while true car il est plus simple pour nous de gérer les tours des joueurs grâces a un modulo et ainsi, terminer le jeu grâce a un break. Le calcul des scores se font en temps réel, ce qui nous servira pour une futur variante.
+
 Explication de la fonction scinder():
 Cette fonction consiste en un calcul dans un premier temps, des rayons des deux différents petits cercle, ensuite la fonction calcul l'équation de deux droites : 
 - la droite (1) passant par le centre du grand cercle initial et du centre du nouveau petit cercle grâce aux cordonnées du clic du joueur (longueur A du triangle ci-dessous)
