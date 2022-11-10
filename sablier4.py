@@ -151,7 +151,8 @@ def detection_intersection(a):
         if distance <= cercle[2]+dernier_cercle[2]:
             dist1 = (dernier_cercle[2]**2 - cercle[2]**2 + distance**2)/(2*distance)
             dist2 = distance - dist1
-            hauteur = sqrt((dernier_cercle[2]**2)) - sqrt((dist1**2))
+            hauteur_racine = sqrt((dernier_cercle[2]**2)) - sqrt((dist1**2))
+            hauteur = hauteur_racine**2
             aire_lentille_1 = (dernier_cercle[2]**2 * acos(dist1/dernier_cercle[2])) - (dist1*hauteur)
             aire_lentille_2 = (cercle[2]**2 * acos(dist2/cercle[2]))- (dist2*hauteur)
             aire_total = aire_lentille_1 + aire_lentille_2
