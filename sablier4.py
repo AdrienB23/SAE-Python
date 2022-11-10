@@ -257,18 +257,17 @@ def main():
                 break
         a, b = b, a
 
-        if intersection_cercle == 0:
+       if intersection_cercle == 0:
             cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
+            detection_cercle_inscrit(a)
 
-        detection_cercle_inscrit(a)
+            aire1, aire2 = calcul_aire(liste_cercle_vert, liste_cercle_violet)
+            inter = detection_intersection(a)
 
-        aire1, aire2 = calcul_aire(liste_cercle_vert, liste_cercle_violet)
-        inter = detection_intersection(a)
-
-        if tour == 0 and inter!= 0:
+            if tour == 0 and inter!= 0:
                 intersection_vert = inter
-        elif tour == 1 and inter!=0:
-            intersection_violet = inter
+            elif tour == 1 and inter!=0:
+                intersection_violet = inter
 
         if numero_tour == 6 and tour == 1:
             score[0] = aire1-intersection_vert
