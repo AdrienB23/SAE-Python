@@ -185,8 +185,8 @@ def main():
     a, b = liste_cercle_violet, liste_cercle_vert
     
     while numero_tour < nb_max_tour+1:
-        x, y = choix_variante(Sablier)
         detection_tour(tour, listeJoueur, numero_tour, nb_max_tour)
+        x, y = choix_variante(Sablier)
         if x == False:
             if tour == 1:
                 numero_tour += 1
