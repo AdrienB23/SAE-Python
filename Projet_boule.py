@@ -9,11 +9,14 @@ def fond_menu(): # Affiche le menu du jeu
     rectangle(2, 2, 1277, 150, "white", epaisseur=5, tag="Menu")
     texte(640, 75, "Bataille des boules", "white", "center", taille=50, tag="Menu")
 
-    rectangle(490, 250, 790, 350, "white", "#009382", 5, tag="Menu")
-    texte(640, 300, "Jouer", "white", "center", taille=40, tag="Menu")
+    rectangle(490, 200, 790, 300, "white", "#009382", 5, tag="Menu")
+    texte(640, 250, "Jouer", "white", "center", taille=40, tag="Menu")
 
-    rectangle(490, 400, 790, 500, "white", "#009382", 5, tag="Menu")
-    texte(640, 450, "Options", "white", "center", taille=40, tag="Menu")
+    rectangle(490, 350, 790, 450, "white", "#009382", 5, tag="Menu")
+    texte(640, 400, "Variantes", "white", "center", taille=40, tag="Menu")
+
+    rectangle(490, 500, 790, 600, "white", "#009382", 5, tag="Menu")
+    texte(640, 550, "Quitter", "white", "center", taille=40, tag="Menu")
     mise_a_jour() 
 
 def fond_jeu(): # Affiche les éléments du terrains de jeu
@@ -26,16 +29,19 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
     texte(0,0,"",tag="tour2")
     mise_a_jour()
 
-def options(): # Affiche le menu des options pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
-    efface("Options")
-    rectangle(2, 2, 1277, 150, "white", epaisseur=5, tag="Options")
-    texte(640, 75, "Options", "white", "center", taille=50, tag="Options")
+def variantes(Sablier): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
+    efface("Variante")
+    rectangle(2, 2, 1277, 150, "white", epaisseur=5, tag="Variante")
+    texte(640, 75, "Variantes", "white", "center", taille=50, tag="Variante")
+    if Sablier:
+        rectangle(250, 200, 550, 300, "white", "green", 5, tag="Sablier")
+        texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+    else:
+        rectangle(250, 200, 550, 300, "white", "red", 5, tag="Sablier")
+        texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
 
-    rectangle(250, 200, 550, 300, "white", "red", 5, tag="Sablier")
-    texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
-
-    rectangle(1130, 680, 1230, 715, "black","red", 1, "Options")
-    texte(1143, 685, "Retour", "white", "nw", taille="16", tag="Options")
+    rectangle(1130, 680, 1230, 715, "black","red", 1, "Variante")
+    texte(1143, 685, "Retour", "white", "nw", taille="16", tag="Variante")
     mise_a_jour()
 
 
@@ -204,7 +210,6 @@ def calcul_aire(liste_cercle_vert, liste_cercle_violet):
     Cette fonction permet de calculer l'air de tout les cercles présent sur le terrain a chaque fin de tour
     liste_cercle_vert : liste contenant les informations sur les différents cercle du joueur vert sur le terrain, nécessaire pour récuperer l'information concernant le rayon
     liste_cercle_violet : liste contenant les informations sur les différents cercle du joueur violet sur le terrain
-
     
     """
     aire1=0
@@ -220,118 +225,125 @@ def main():
     rectangle(-1,-1,1280,720,"darkcyan","darkcyan")
     fond_menu()
     Sablier = False
+    Quitter = False
     while True:
         x, y, z = attente_clic()
-        if 490<=x<=790 and 250<=y<=350:
-            efface("Menu")
-            fond_jeu()
-            break
-        elif 490<=x<=790 and 400<=y<=500:
-            efface("Menu")
-            options()
-            while True:
-                x, y, z = attente_clic()
-                if 250<=x<=550 and 200<=y<=300:
-                    if Sablier == False :
+        if 490 <= x <= 790: 
+            if 200 <= y <= 300:
+                efface("Menu")
+                fond_jeu()
+                break
+            elif 350 <= y <= 450:
+                efface("Menu")
+                variantes(Sablier)
+                while True:
+                    x, y, z = attente_clic()
+                    if 250 <= x <= 550 and 200 <= y <=300:
+                        if Sablier == False :
+                            efface("Sablier")
+                            rectangle(250, 200, 550, 300, "white", "green", 5, tag="Sablier")
+                            texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+                            mise_a_jour()
+                            Sablier = True
+                        else:
+                            efface("Sablier")
+                            rectangle(250, 200, 550, 300, "white", "red", 5, tag="Sablier")
+                            texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+                            mise_a_jour()
+                            Sablier = False
+                    elif 1130<=x<=1230 and 680<=y<=715:
+                        efface("Variante")
                         efface("Sablier")
-                        rectangle(250, 200, 550, 300, "white", "green", 5, tag="Sablier")
-                        texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+                        fond_menu()
                         mise_a_jour()
-                        Sablier = True
-                    else:
-                        efface("Sablier")
-                        rectangle(250, 200, 550, 300, "white", "red", 5, tag="Sablier")
-                        texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
-                        mise_a_jour()
-                        Sablier = False
-                elif 1130<=x<=1230 and 680<=y<=715:
-                    efface("Options")
-                    efface("Sablier")
-                    fond_menu()
-                    mise_a_jour()
-                    break
-    
-    listeJoueur = ["Joueur 1","Joueur 2"]
-    couleurJoueur = ["mediumseagreen", "mediumpurple"]
-    liste_cercle_violet = []
-    liste_cercle_vert = []
-    tour, numero_tour = 0, 1
-    rayon = 50
-    nb_max_tour = 5
-    score=[0, 0]
-    inter, intersection_vert, intersection_violet = 0, 0, 0
-    alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
-    
-    while numero_tour < nb_max_tour+1:
-        detection_tour(tour, listeJoueur, numero_tour, nb_max_tour)
-        x, y = choix_variante(Sablier)
-        if x == False:
+                        break
+            elif 500 <= y <=600:
+                ferme_fenetre()
+                Quitter = True
+                break
+
+    if not Quitter:
+        listeJoueur = ["Joueur 1","Joueur 2"]
+        couleurJoueur = ["mediumseagreen", "mediumpurple"]
+        liste_cercle_violet = []
+        liste_cercle_vert = []
+        tour, numero_tour = 0, 1
+        rayon = 50
+        nb_max_tour = 5
+        score=[0, 0]
+        inter, intersection_vert, intersection_violet = 0, 0, 0
+        alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
+
+        while numero_tour < nb_max_tour+1:
+            detection_tour(tour, listeJoueur, numero_tour, nb_max_tour)
+            x, y = choix_variante(Sablier)
+            if x == False:
+                if tour == 1:
+                    numero_tour += 1
+                tour = (tour+1) % 2
+                mise_a_jour()
+                continue
+            if x == True or (1130<=x<=1230 and 680<=y<=715):
+                break
+
+            x, y = clic_hors_bordure(x, y)
+
+            if 50<=x<100:
+                x=100
+            elif 1180<x<=1230:
+                x=1180
+                
+            if 100<=y<150:
+                y=150
+            elif 620<y<=670:
+                y=620
+
             if tour == 1:
                 numero_tour += 1
-            tour = (tour+1) % 2
-            mise_a_jour()
-            continue
-        if x == True or (1130<=x<=1230 and 680<=y<=715):
-            break
-
-        clic_hors_bordure(x, y)
-
-        if 50<=x<100:
-            x=100
-        elif 1180<x<=1230:
-            x=1180
-            
-        if 100<=y<150:
-            y=150
-        elif 620<y<=670:
-            y=620
-
-        if tour == 1:
-            numero_tour += 1
-                
-        intersection_cercle = 0
-
-        for i in range(len(alterner_liste_joueur)-1, -1, -1):
-            element = alterner_liste_joueur[i]
-            distance = (x-alterner_liste_joueur[i][0])**2 + (y-alterner_liste_joueur[i][1])**2
-            if sqrt(distance) < alterner_liste_joueur[i][2] + rayon and sqrt(distance) > alterner_liste_joueur[i][2]:
-                intersection_cercle += 1
-            elif sqrt(distance) < alterner_liste_joueur[i][2]:
-                scinder(x, y, alterner_liste_joueur, liste_cercle_vert, element, distance, tour, couleurJoueur)
-                intersection_cercle += 1
-                break
-        alterner_liste_joueur, b = b, alterner_liste_joueur
-
-        if intersection_cercle == 0:
-            cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
-
-            detection_cercle_inscrit(alterner_liste_joueur)
-
-            aire1, aire2 = calcul_aire(liste_cercle_vert, liste_cercle_violet)
-            inter = detection_intersection(alterner_liste_joueur)
-
-            if tour == 0 and inter!= 0:
-                    intersection_vert = inter
-            elif tour == 1 and inter!=0:
-                intersection_violet = inter
-
-        if numero_tour == 6 and tour == 1:
-            score[0] = aire1-intersection_vert
-            score[1] = aire2-intersection_violet
-            if score[0] > score[1]:
-                texte(640, 50, "Le Joueur Vert gagne", "white", "center")
-                attente_clic()
-            elif score[1] > score[0]:
-                texte(640, 50, "Le Joueur Violet gagne", "white", "center")
-                attente_clic()
-            else:
-                texte(640, 50, "Egalité", "white", "center")
-                attente_clic()
                     
-        tour = (tour+1) % 2 
+            intersection_cercle = 0
 
-        mise_a_jour()
-    ferme_fenetre()
+            for i in range(len(alterner_liste_joueur)-1, -1, -1):
+                element = alterner_liste_joueur[i]
+                distance = (x-alterner_liste_joueur[i][0])**2 + (y-alterner_liste_joueur[i][1])**2
+                if sqrt(distance) < alterner_liste_joueur[i][2] + rayon and sqrt(distance) > alterner_liste_joueur[i][2]:
+                    intersection_cercle += 1
+                elif sqrt(distance) < alterner_liste_joueur[i][2]:
+                    scinder(x, y, alterner_liste_joueur, liste_cercle_vert, element, distance, tour, couleurJoueur)
+                    intersection_cercle += 1
+                    break
+            alterner_liste_joueur, b = b, alterner_liste_joueur
+
+            if intersection_cercle == 0:
+                cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
+
+                detection_cercle_inscrit(alterner_liste_joueur)
+
+                aire1, aire2 = calcul_aire(liste_cercle_vert, liste_cercle_violet)
+                inter = detection_intersection(alterner_liste_joueur)
+
+                if tour == 0 and inter!= 0:
+                        intersection_vert = inter
+                elif tour == 1 and inter!=0:
+                    intersection_violet = inter
+
+            if numero_tour == 6 and tour == 1:
+                score[0] = aire1-intersection_vert
+                score[1] = aire2-intersection_violet
+                if score[0] > score[1]:
+                    texte(640, 50, "Le Joueur Vert gagne", "white", "center")
+                    attente_clic()
+                elif score[1] > score[0]:
+                    texte(640, 50, "Le Joueur Violet gagne", "white", "center")
+                    attente_clic()
+                else:
+                    texte(640, 50, "Egalité", "white", "center")
+                    attente_clic()
+                        
+            tour = (tour+1) % 2 
+
+            mise_a_jour()
+        ferme_fenetre()
 
 if __name__ == '__main__':
     main()
