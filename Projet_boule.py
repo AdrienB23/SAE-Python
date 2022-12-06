@@ -20,7 +20,7 @@ def fond_menu(): # Affiche le menu du jeu
     mise_a_jour() 
 
 def fond_jeu(): # Affiche les éléments du terrains de jeu
-    rectangle(50,100,1280-50,720-50,"floralwhite","floralwhite")
+    rectangle(50, 100, 1230, 670,"floralwhite","floralwhite")
 
     rectangle(1130, 680, 1230, 715, "black","red", 1, "Quitter")
     texte(1143, 685, "Quitter", "white", "nw", taille="16")
@@ -29,7 +29,7 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
     texte(0,0,"",tag="tour2")
     mise_a_jour()
 
-def variantes(Sablier): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
+def variantes(Sablier, Scores): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
     efface("Variante")
     rectangle(2, 2, 1277, 150, "white", epaisseur=5, tag="Variante")
     texte(640, 75, "Variantes", "white", "center", taille=50, tag="Variante")
@@ -39,11 +39,16 @@ def variantes(Sablier): # Affiche le menu des variantes pour choisir une ou plus
     else:
         rectangle(250, 200, 550, 300, "white", "red", 5, tag="Sablier")
         texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+    if Scores:
+        rectangle(600, 200, 900, 300, "white", "green", 5, tag="Scores")
+        texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
+    else:
+        rectangle(600, 200, 900, 300, "white", "red", 5, tag="Scores")
+        texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
 
     rectangle(1130, 680, 1230, 715, "black","red", 1, "Variante")
     texte(1143, 685, "Retour", "white", "nw", taille="16", tag="Variante")
     mise_a_jour()
-
 
 ######################## Fonctions d'ajout et de choix des variants/option #######################################################
 
@@ -52,35 +57,52 @@ def fond_sablier(temps, t1):
     Affiche un temps qui s'écoule où 'temps' est le temps maximum que doit prendre un jouer pour jouer
     et 't1' le temps qui augmente tant que le joueur ne joue pas.
     """
-    efface("Temps")
-    texte(640, 80, str(round(temps-t1, 1)), "white", "center", taille = 20, tag = "Temps")
+    efface("Sablier")
+    texte(640, 80, str(round(temps-t1, 1)), "white", "center", taille = 20, tag = "Sablier")
     mise_a_jour()
 
-def choix_variante(Sablier):
+def fond_score(score):
+    texte(325, 50, "Score du Vert : " + str(score[0]), "mediumseagreen", "w", taille = 30, tag = "Scores")
+    texte(700, 50, "Score du Violet : " + str(score[1]), "mediumpurple", "w", taille = 30, tag = "Scores")
+    mise_a_jour()   
+
+def variante_sablier():
     """ 
     Renvoie les coordonnées du clic et fait appliquer au programme la variante 'Sablier' 
     si elle a été sélectionnée dans le menu.
     """
-    if Sablier:
-        temps=time() + 5
+    temps=time() + 5
+    t1 = time()
+    while t1 < temps:
+        ev = donne_evenement()
+        type_ev = type_evenement(ev)
         t1 = time()
-        while t1 < temps:
-            ev = donne_evenement()
-            type_ev = type_evenement(ev)
-            t1 = time()
-            fond_sablier(temps, t1)
-            if type_ev == "ClicGauche":
-                x, y = clic_x(ev), clic_y(ev)
-                if 1130<=x<=1230 and 680<=y<=715:
-                    return True, True
-                if x<50 or x>1230 or y<100 or y>670:
-                    continue
-                return x, y
-        return False, False
-    else:
-        x, y, w = attente_clic()
-        return x, y
+        fond_sablier(temps, t1)
+        if type_ev == "ClicGauche":
+            x, y = clic_x(ev), clic_y(ev)
+            if 1130<=x<=1230 and 680<=y<=715:
+                return True, True
+            if x<50 or x>1230 or y<100 or y>670:
+                continue
+            return x, y
+    return False, False
 
+def variante_score(score):
+    fond_score(score)
+    temps = time() + 2
+    t = time()
+    while t < temps:
+        t = time()
+        ev = donne_evenement()
+        mise_a_jour()
+        type_ev = type_evenement(ev)
+        if type_ev == 'ClicGauche':
+            efface("Scores")
+            mise_a_jour()
+            x, y = clic_x(ev), clic_y(ev)
+            return x, y
+    efface("Scores")
+    mise_a_jour()
 
 ######################## Fonctions de detection ##################################################################################
 
@@ -101,8 +123,8 @@ def detection_tour(tour, listeJoueur, numero_tour, nb_max_tour):
     nb_max_tour : indique le nombre maximum de tours (paramètre : int)
     """
     efface("tour")
-    texte(50, 50,"Tour : " + listeJoueur[tour],"lightcyan", "w",police="",tag="tour")
-    texte(1280-50, 50, "Tour n° "+ str(numero_tour) + "/"+str(nb_max_tour), "lightcyan","e",police="",tag="tour")
+    texte(50, 50,"Tour : " + listeJoueur[tour], "lightcyan", "w", tag="tour")
+    texte(1280-50, 50, "Tour n° "+ str(numero_tour) + "/"+str(nb_max_tour), "lightcyan", "e", tag="tour")
 
 def detection_intersection(alterner_liste_joueur):
     """
@@ -225,6 +247,8 @@ def main():
     rectangle(-1,-1,1280,720,"darkcyan","darkcyan")
     fond_menu()
     Sablier = False
+    Scores = False
+    affiche_scores = False
     Quitter = False
     while True:
         x, y, z = attente_clic()
@@ -235,10 +259,10 @@ def main():
                 break
             elif 350 <= y <= 450:
                 efface("Menu")
-                variantes(Sablier)
+                variantes(Sablier, Scores)
                 while True:
                     x, y, z = attente_clic()
-                    if 250 <= x <= 550 and 200 <= y <=300:
+                    if 250 <= x <= 550 and 200 <= y <= 300:
                         if Sablier == False :
                             efface("Sablier")
                             rectangle(250, 200, 550, 300, "white", "green", 5, tag="Sablier")
@@ -251,9 +275,23 @@ def main():
                             texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
                             mise_a_jour()
                             Sablier = False
+                    elif 600 <= x <= 900 and 200 <= y <= 300:
+                        if not Scores:
+                            efface("Scores")
+                            rectangle(600, 200, 900, 300, "white", "green", 5, tag="Scores")
+                            texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
+                            mise_a_jour()
+                            Scores = True
+                        else:
+                            efface("Scores")
+                            rectangle(600, 200, 900, 300, "white", "red", 5, tag="Scores")
+                            texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
+                            mise_a_jour()
+                            Scores = False
                     elif 1130<=x<=1230 and 680<=y<=715:
                         efface("Variante")
                         efface("Sablier")
+                        efface("Scores")
                         fond_menu()
                         mise_a_jour()
                         break
@@ -262,7 +300,7 @@ def main():
                 Quitter = True
                 break
 
-    if not Quitter:
+    if Quitter == False:
         listeJoueur = ["Joueur 1","Joueur 2"]
         couleurJoueur = ["mediumseagreen", "mediumpurple"]
         liste_cercle_violet = []
@@ -275,15 +313,43 @@ def main():
         alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
 
         while numero_tour < nb_max_tour+1:
+            x = None
             detection_tour(tour, listeJoueur, numero_tour, nb_max_tour)
-            x, y = choix_variante(Sablier)
-            if x == False:
-                if tour == 1:
-                    numero_tour += 1
-                tour = (tour+1) % 2
+            if Sablier:
+                x, y = variante_sablier()
+                if not x:
+                    if tour == 1:
+                        numero_tour += 1
+                    tour = (tour+1) % 2
+                    mise_a_jour()
+                    continue
+                elif x or (1130<=x<=1230 and 680<=y<=715):
+                    break
+            if Scores:
+                ev = donne_evenement()
                 mise_a_jour()
-                continue
-            if x == True or (1130<=x<=1230 and 680<=y<=715):
+                type_ev = type_evenement(ev)
+                while type_ev == 'RAS':
+                    ev = donne_evenement()
+                    mise_a_jour()
+                    type_ev = type_evenement(ev)
+                if type_ev == 'ClicGauche':
+                    x, y = clic_x(ev), clic_y(ev)
+                elif type_ev == 'Touche':
+                    touche_ev = touche(ev)
+                    if touche_ev == 's':
+                        x, y = variante_score(score)
+                        if x == None:
+                            continue
+                    else:
+                        continue        
+                else:
+                    continue
+            
+            if x == None:
+                x, y, w = attente_clic()
+            
+            if 1130<=x<=1230 and 680<=y<=715:
                 break
 
             x, y = clic_hors_bordure(x, y)
@@ -323,7 +389,7 @@ def main():
                 inter = detection_intersection(alterner_liste_joueur)
 
                 if tour == 0 and inter!= 0:
-                        intersection_vert = inter
+                    intersection_vert = inter
                 elif tour == 1 and inter!=0:
                     intersection_violet = inter
 
