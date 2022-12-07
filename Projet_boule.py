@@ -23,7 +23,7 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
     rectangle(50, 100, 1230, 670,"floralwhite","floralwhite")
 
     rectangle(1130, 680, 1230, 715, "black","red", 1, "Quitter")
-    texte(1143, 685, "Quitter", "white", "nw", taille="16")
+    texte(1180, 685, "Quitter", "white", "nw", taille="16")
 
     texte(0,0,"",tag="tour")
     texte(0,0,"",tag="tour2")
