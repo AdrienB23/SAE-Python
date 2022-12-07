@@ -23,7 +23,7 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
     rectangle(50, 100, 1230, 670,"floralwhite","floralwhite")
 
     rectangle(1130, 680, 1230, 715, "black","red", 1, "Quitter")
-    texte(1180, 685, "Quitter", "white", "nw", taille="16")
+    texte(1180, 698, "Quitter", "white", "c", taille="16")
 
     texte(0,0,"",tag="tour")
     texte(0,0,"",tag="tour2")
@@ -71,28 +71,25 @@ def variante_sablier():
     Renvoie les coordonnées du clic et fait appliquer au programme la variante 'Sablier' 
     si elle a été sélectionnée dans le menu.
     """
-    temps=time() + 5
-    t1 = time()
-    while t1 < temps:
+    temps=time() + 10
+    while time() < temps:
         ev = donne_evenement()
+        mise_a_jour()
         type_ev = type_evenement(ev)
-        t1 = time()
-        fond_sablier(temps, t1)
+        fond_sablier(temps, time())
         if type_ev == "ClicGauche":
             x, y = clic_x(ev), clic_y(ev)
             if 1130<=x<=1230 and 680<=y<=715:
-                return True, True
+                return x, y
             if x<50 or x>1230 or y<100 or y>670:
                 continue
             return x, y
     return False, False
 
-def variante_score(score):
+def variante_score(score, t_sablier):
     fond_score(score)
     temps = time() + 2
-    t = time()
-    while t < temps:
-        t = time()
+    while time() < temps:
         ev = donne_evenement()
         mise_a_jour()
         type_ev = type_evenement(ev)
@@ -100,9 +97,15 @@ def variante_score(score):
             efface("Scores")
             mise_a_jour()
             x, y = clic_x(ev), clic_y(ev)
+            if t_sablier != None:
+                return x, y, time()
             return x, y
     efface("Scores")
     mise_a_jour()
+
+    if t_sablier != None:
+        return None, None, t_sablier + 2
+    return None, None
 
 ######################## Fonctions de detection ##################################################################################
 
@@ -248,7 +251,6 @@ def main():
     fond_menu()
     Sablier = False
     Scores = False
-    affiche_scores = False
     Quitter = False
     while True:
         x, y, z = attente_clic()
@@ -301,7 +303,7 @@ def main():
                 break
 
     if Quitter == False:
-        listeJoueur = ["Joueur 1","Joueur 2"]
+        listeJoueur = ["Joueur Vert","Joueur Violet"]
         couleurJoueur = ["mediumseagreen", "mediumpurple"]
         liste_cercle_violet = []
         liste_cercle_vert = []
@@ -316,31 +318,41 @@ def main():
             x = None
             detection_tour(tour, listeJoueur, numero_tour, nb_max_tour)
             if Sablier:
-                x, y = variante_sablier()
-                if not x:
+                t = 0
+                temps = time() + 10
+                while time() - t < temps:
+                    ev = donne_evenement()
+                    mise_a_jour()
+                    type_ev = type_evenement(ev)
+                    fond_sablier(temps, time() - t)
+                    if type_ev == "ClicGauche":
+                        x, y = clic_x(ev), clic_y(ev)
+                        if 1130<=x<=1230 and 680<=y<=715:
+                            break
+                        if x<50 or x>1230 or y<100 or y>670:
+                            continue
+                        break
+                    elif type_ev == "Touche":
+                        if Scores and touche(ev) == 's':
+                            x, y, t = variante_score(score, t)
+                            if x != None:
+                                break
+                            continue
+                if x == None:
                     if tour == 1:
                         numero_tour += 1
                     tour = (tour+1) % 2
                     mise_a_jour()
                     continue
-                elif x or (1130<=x<=1230 and 680<=y<=715):
-                    break
-            if Scores:
+            elif Scores:
                 ev = donne_evenement()
                 mise_a_jour()
                 type_ev = type_evenement(ev)
-                while type_ev == 'RAS':
-                    ev = donne_evenement()
-                    mise_a_jour()
-                    type_ev = type_evenement(ev)
                 if type_ev == 'ClicGauche':
                     x, y = clic_x(ev), clic_y(ev)
                 elif type_ev == 'Touche':
-                    touche_ev = touche(ev)
-                    if touche_ev == 's':
-                        x, y = variante_score(score)
-                        if x == None:
-                            continue
+                    if touche(ev) == 's':
+                        x, y = variante_score(score, None)
                     else:
                         continue        
                 else:
