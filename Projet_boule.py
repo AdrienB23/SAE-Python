@@ -52,10 +52,10 @@ def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affi
         rectangle(275, 350, 575, 450, "white", "red", 5, tag="Taille")
         texte(425, 400, "Taille", "white", "center", taille=32, tag="Taille" )
     if Dynamique:
-        rectangle(625, 350, 925, 450, "white", "green", 5, tag="Taille")
+        rectangle(625, 350, 925, 450, "white", "green", 5, tag="Dynamique")
         texte(775, 400, "Dynamique", "white", "center", taille=32, tag="Dynamique" )
     else:
-        rectangle(625, 350, 925, 450, "white", "red", 5, tag="Taille")
+        rectangle(625, 350, 925, 450, "white", "red", 5, tag="Dynamique")
         texte(775, 400, "Dynamique", "white", "center", taille=32, tag="Dynamique" )
     if Terminaison:
         rectangle(275, 500, 575, 600, "white", "green", 5, tag="Terminaison")
@@ -322,19 +322,19 @@ def main():
                             texte(425, 400, "Taille", "white", "center", taille=32, tag="Taille" )
                             mise_a_jour()
                             Taille = False
-                    elif 625 <= x <= 925 and 500 <= y <= 600:
-                        if not Obstacle:
-                            efface("Obstacle")
-                            rectangle(625, 500, 925, 600, "white", "green", 5, tag="Obstacle")
-                            texte(775, 550, "Obstacle", "white", "center", taille=32, tag="Obstacle" )
+                    elif 625 <= x <= 925 and 350 <= y <= 450:
+                        if not Dynamique:
+                            efface("Dynamique")
+                            rectangle(625, 350, 925, 450, "white", "green", 5, tag="Dynamique")
+                            texte(775, 400, "Dynamique", "white", "center", taille=32, tag="Dynamique" )
                             mise_a_jour()
-                            Obstacle = True
+                            Dynamique = True
                         else:
-                            efface("Obstacle")
-                            rectangle(625, 500, 925, 600, "white", "red", 5, tag="Obstacle")
-                            texte(775, 550, "Obstacle", "white", "center", taille=32, tag="Obstacle" )
+                            efface("Dynamique")
+                            rectangle(625, 350, 925, 450, "white", "red", 5, tag="Dynamique")
+                            texte(775, 400, "Dynamique", "white", "center", taille=32, tag="Dynamique" )
                             mise_a_jour()
-                            Obstacle = False
+                            Dynamique = False
                     elif 275 <= x <= 575 and 500 <= y <= 600:
                         if Terminaison == False :
                             efface("Terminaison")
@@ -348,11 +348,27 @@ def main():
                             texte(425, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
                             mise_a_jour()
                             Terminaison = False
+                    elif 625 <= x <= 925 and 500 <= y <= 600:
+                        if not Obstacle:
+                            efface("Obstacle")
+                            rectangle(625, 500, 925, 600, "white", "green", 5, tag="Obstacle")
+                            texte(775, 550, "Obstacle", "white", "center", taille=32, tag="Obstacle" )
+                            mise_a_jour()
+                            Obstacle = True
+                        else:
+                            efface("Obstacle")
+                            rectangle(625, 500, 925, 600, "white", "red", 5, tag="Obstacle")
+                            texte(775, 550, "Obstacle", "white", "center", taille=32, tag="Obstacle" )
+                            mise_a_jour()
+                            Obstacle = False
                     elif 1130<=x<=1230 and 680<=y<=715:
                         efface("Variante")
                         efface("Sablier")
                         efface("Scores")
+                        efface("Taille")
+                        efface("Dynamique")
                         efface("Terminaison")
+                        efface("Obstacle")
                         fond_menu()
                         mise_a_jour()
                         break
