@@ -129,26 +129,6 @@ def detection_tour(tour, listeJoueur, numero_tour, nb_max_tour):
     texte(50, 50,"Tour : " + listeJoueur[tour], "lightcyan", "w", tag="tour")
     texte(1280-50, 50, "Tour n° "+ str(numero_tour) + "/"+str(nb_max_tour), "lightcyan", "e", tag="tour")
 
-def detection_intersection(alterner_liste_joueur):
-    """
-    Cette fonction permet de detecter l'intersection de deux cercles d'un même joueur, cela est obligatoire pour le bon calcul du score
-    alterner_liste_joueur : c'est une variable temporaire qui permet d'alterner entre les deux listes des deux différents joueurs
-    """
-    aire = 0
-    for i in range(len(alterner_liste_joueur)-1):
-        dernier_cercle = alterner_liste_joueur[-1]
-        cercle = alterner_liste_joueur[i]
-        distance = sqrt((cercle[0]-dernier_cercle[0])**2 + (cercle[1]-dernier_cercle[1])**2)
-        if distance <= cercle[2]+dernier_cercle[2]:
-            dist1 = (dernier_cercle[2]**2 - cercle[2]**2 + distance**2)/(2*distance)
-            dist2 = distance - dist1
-            hauteur = sqrt((dernier_cercle[2]**2) - (dist1**2))
-            aire_lentille_1 = (dernier_cercle[2]**2 * acos(dist1/dernier_cercle[2])) - (dist1*hauteur)
-            aire_lentille_2 = (cercle[2]**2 * acos(dist2/cercle[2]))- (dist2*hauteur)
-            aire_total = aire_lentille_1 + aire_lentille_2
-            aire += aire_total  
-    return round(aire)
-
 def detection_cercle_inscrit(alterner_liste_joueur):
     """
     Permet de detecter si un cercle est caché derrière un autre cercle qui à été posé par dessus, si cela est le cas, la fonction supprime le cercle caché.
@@ -166,6 +146,17 @@ def detection_cercle_inscrit(alterner_liste_joueur):
         alterner_liste_joueur.remove(liste[i])
 
 ######################## Fonctions agissant directement sur le terrain de jeu ####################################################
+def calcul_score(liste_cercle):
+    ensemble = set()
+    for element in liste_cercle:
+        for x in range(element[0]-element[2], element[0]+element[2]+1):
+            for y in range(element[1]-element[2], element[1]+element[2]+1):
+                distance = sqrt((x-element[0])**2 + (y-element[1])**2)
+                if distance <= element[2]:
+                    ensemble.add((x, y))
+    if ensemble == {}:
+        return None
+    return ensemble
 
 def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tour, couleurJoueur):
     """
@@ -179,8 +170,8 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
     couleurJoueur (list) : indique la couleur des deux cercles qui vont se créer lors du scindement
     """
     tour = (tour+1) % 2
-    rayon1 = element[2]-sqrt(distance)
-    rayon2 = element[2]-rayon1
+    rayon1 = int(element[2]-sqrt(distance))
+    rayon2 = int(element[2]-rayon1)
     
     if x - element[0] == 0:
         m2 = x
@@ -193,13 +184,13 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
     x2 = sin(alpha)*rayon1
     y2 = cos(alpha)*rayon1
     if element[0]-x < 0:
-        x2 = element[0]-x2
+        x2 = int(element[0]-x2)
     else:
-        x2 = element[0]+x2
+        x2 = int(element[0]+x2)
     if element[1]-y < 0:
-        y2 = element[1]-y2
+        y2 = int(element[1]-y2)
     else:
-        y2 = element[1]+y2
+        y2 = int(element[1]+y2)
 
     tag1 = cercle(x, y, rayon1, "black", couleurJoueur[tour], 1)
     tag2 = cercle(x2, y2, rayon2, "black", couleurJoueur[tour], 1)
@@ -229,21 +220,6 @@ def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
         liste_cercle_vert.append([x, y, rayon, id_cercle])
     else:
         liste_cercle_violet.append([x, y, rayon, id_cercle])
-
-def calcul_aire(liste_cercle_vert, liste_cercle_violet):
-    """
-    Cette fonction permet de calculer l'air de tout les cercles présent sur le terrain a chaque fin de tour
-    liste_cercle_vert : liste contenant les informations sur les différents cercle du joueur vert sur le terrain, nécessaire pour récuperer l'information concernant le rayon
-    liste_cercle_violet : liste contenant les informations sur les différents cercle du joueur violet sur le terrain
-    
-    """
-    aire1=0
-    aire2=0
-    for i in range(len(liste_cercle_vert)):
-        aire1 += liste_cercle_vert[i][2]**2 * pi
-    for i in range(len(liste_cercle_violet)):
-        aire2 += liste_cercle_violet[i][2]**2 * pi
-    return round(aire1), round(aire2)
 
 def main():
     cree_fenetre(1280, 720)
@@ -397,17 +373,14 @@ def main():
 
                 detection_cercle_inscrit(alterner_liste_joueur)
 
-                aire1, aire2 = calcul_aire(liste_cercle_vert, liste_cercle_violet)
-                inter = detection_intersection(alterner_liste_joueur)
-
                 if tour == 0 and inter!= 0:
                     intersection_vert = inter
                 elif tour == 1 and inter!=0:
                     intersection_violet = inter
 
+            score[0] = len(calcul_score(liste_cercle_vert))
+            score[1] = len(calcul_score(liste_cercle_violet))
             if numero_tour == 6 and tour == 1:
-                score[0] = aire1-intersection_vert
-                score[1] = aire2-intersection_violet
                 if score[0] > score[1]:
                     texte(640, 50, "Le Joueur Vert gagne", "white", "center")
                     attente_clic()
@@ -421,6 +394,7 @@ def main():
             tour = (tour+1) % 2 
 
             mise_a_jour()
+        print(score)
         ferme_fenetre()
 
 if __name__ == '__main__':
