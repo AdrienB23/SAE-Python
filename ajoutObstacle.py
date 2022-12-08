@@ -112,6 +112,11 @@ def variante_sablier():
     return False, False
 
 def variante_score(score, t_sablier):
+    """
+    Permet d'afficher un tableau des scores au moment ou la personne appuie sur la touche 's'
+    le paramètre score est une liste repertoriant les scores de chacun des joueurs
+
+    """
     fond_score(score)
     temps = time() + 2
     while time() < temps:
@@ -133,10 +138,18 @@ def variante_score(score, t_sablier):
     return None, None
 
 def variante_terminaison(numero_tour):
+    """ 
+    Permet aux joueurs d'arrêter la partie dans les 5 tours suivants.
+    Le parametre numero_tour permet de récuperer le tour actuel.
+    """
     nb_max_tour = numero_tour + 5
+    mise_a_jour()
     return nb_max_tour
 
 def creer_obstacles():
+    """
+    Créer une liste correspondant aux informations des différents obstacles représenté par des boules.
+    """
     liste_obstacle = []
     for i in range(10):
         r = randint(25, 50)
@@ -146,11 +159,48 @@ def creer_obstacles():
     return liste_obstacle
 
 def detecter_intersection(x, y, rayon, liste_obstacle):
+    """
+    Permet de détecter si un cercle est en intersection avec un obstacle
+    les parametres 'x', 'y' et 'rayon' correspondent aux informations du clique et du rayon du futur cercle
+    le paramètre liste_obstacle nous permet de tester les intersections avec les obstacles grâces aux informations les concernant
+    """
     for i in range(len(liste_obstacle)):
         distance = sqrt((x-liste_obstacle[i][0])**2 + (y-liste_obstacle[i][1])**2)
         if distance < liste_obstacle[i][2] + rayon:
             return True
     return None
+
+
+def variante_dynamique(liste_cercle_un, liste_cercle_deux, couleur, Obstacle, liste_obstacle):
+    """
+    Permet d'augmenter le rayon de toute les boules présente sur le terrain d'un certain nombre de pixel
+    les paramètres liste_cercle_un et liste_cercle_deux représente les listes des cercles des deux joueurs
+    la couleur permet de créer les cercles de couleur
+    obstacle et liste_bostacle sont nécessaire pour tester si les cercles sont en intersection avec les obstacles
+    """
+    for i in range(5):
+        for i in range(len(liste_cercle_un)):
+            intersection = 0
+            x, y, r = liste_cercle_un[i][0], liste_cercle_un[i][1], liste_cercle_un[i][2]+1
+            if Obstacle == True :
+                if detecter_intersection(x, y, r, liste_obstacle) == True:
+                    intersection += 1
+            for element in liste_cercle_deux:
+                distance = sqrt((x - element[0])**2 + (y-element[1])**2)
+                if distance < element[2] + r:
+                    intersection += 1
+
+            liste = calcul_extremite_cercle(liste_cercle_un[i], r)
+            if liste[0]<50 or liste[1]>1230 or liste[2]<100 or liste[3]>670:
+                intersection += 1
+                
+            if intersection == 0:
+                efface(liste_cercle_un[i][3])
+                id_cercle = cercle(x, y, r, "black", couleur)
+                liste_cercle_un[i] = [x, y, r, id_cercle]
+    return liste_cercle_un
+        
+
 ######################## Fonctions de detection ##################################################################################
 
 def clic_hors_bordure(x, y):
@@ -194,7 +244,15 @@ def detection_cercle_inscrit(alterner_liste_joueur):
         alterner_liste_joueur.remove(liste[i])
 
 ######################## Fonctions agissant directement sur le terrain de jeu ####################################################
+def calcul_extremite_cercle(cercle, r):
+    liste = [cercle[0]-r,cercle[0]+r,cercle[1]-r,cercle[1]+r]
+    return liste
+
 def calcul_score(liste_cercle):
+    """
+    Permet de calculer l'air des cercles grâce a un comptage des différents pixel présent et faisait parties des cercles dans l'air de jeu
+    le paramètre 'liste_cercle' correspond a la liste des différents cercle du joueur
+    """
     ensemble = set()
     for element in liste_cercle:
         for x in range(element[0]-element[2], element[0]+element[2]+1):
@@ -255,15 +313,9 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
 def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
     """
     Cette fonction permet d'afficher les cercles et les intègre dans une liste pour garder les différentes informations tel que :
-    x, y : cordonnées x et if 50<=x<100:
-                x=100
-            elif 1180<x<=1230:
-                x=1180
-                
-            if 100<=y<150:
-                y=150
-            elif 620<y<=670:
-                y=620, id_cercle]
+    x, y : cordonnées x et y
+    couleur : la couleur du joueur pour bien les différencier
+    les deux listes de cercles qui permet d'ajouter les informations des différents cercles
     rayon : indique le rayon du cercle prochainement généré
     """
     id_cercle = cercle(x, y, rayon, "black", couleur, 1)
@@ -394,11 +446,11 @@ def main():
         couleurJoueur = ["mediumseagreen", "mediumpurple"]
         liste_cercle_violet = []
         liste_cercle_vert = []
+        liste_obstacle = []
         tour, numero_tour = 0, 1
         rayon = 50
         nb_max_tour = 10
         score=[0, 0]
-        inter = 0
         alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
         detection_terminaison = 0
         detection_obstacle = 0
@@ -530,11 +582,6 @@ def main():
 
                 detection_cercle_inscrit(alterner_liste_joueur)
 
-                if tour == 0 and inter!= 0:
-                    intersection_vert = inter
-                elif tour == 1 and inter!=0:
-                    intersection_violet = inter
-
             score[0] = len(calcul_score(liste_cercle_vert))
             score[1] = len(calcul_score(liste_cercle_violet))
             if numero_tour == nb_max_tour+1 and tour == 1:
@@ -547,7 +594,10 @@ def main():
                 else:
                     texte(640, 50, "Egalité", "white", "center")
                     attente_clic()
-                        
+            
+            if Dynamique == True:
+                variante_dynamique(alterner_liste_joueur, b, couleurJoueur[tour], Obstacle, liste_obstacle)
+                variante_dynamique(b, alterner_liste_joueur, couleurJoueur[(tour+1)%2], Obstacle, liste_obstacle)
             tour = (tour+1) % 2 
 
             mise_a_jour()
