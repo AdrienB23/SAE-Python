@@ -35,28 +35,41 @@ def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affi
     texte(640, 75, "Variantes", "white", "center", taille=50, tag="Variante")
     if Sablier:
         rectangle(275, 200, 575, 300, "white", "green", 5, tag="Sablier")
-        texte(400, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
+        texte(425, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
     else:
         rectangle(275, 200, 575, 300, "white", "red", 5, tag="Sablier")
-        texte(400, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
+        texte(425, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
     if Scores:
         rectangle(625, 200, 925, 300, "white", "green", 5, tag="Scores")
-        texte(750, 250, "Scores", "white", "center", taille=32, tag="Scores" )
+        texte(775, 250, "Scores", "white", "center", taille=32, tag="Scores" )
     else:
         rectangle(625, 200, 925, 300, "white", "red", 5, tag="Scores")
-        texte(750, 250, "Scores", "white", "center", taille=32, tag="Scores" )
-    if Terminaison:
-        rectangle(275, 500, 575, 600, "white", "green", 5, tag="Terminaison")
-        texte(400, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
-    else:
-        rectangle(275, 500, 575, 600, "white", "red", 5, tag="Terminaison")
-        texte(400, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+        texte(775, 250, "Scores", "white", "center", taille=32, tag="Scores" )
     if Taille:
         rectangle(275, 350, 575, 450, "white", "green", 5, tag="Taille")
-        texte(400, 400, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+        texte(425, 400, "Taille", "white", "center", taille=32, tag="Taille" )
     else:
         rectangle(275, 350, 575, 450, "white", "red", 5, tag="Taille")
-        texte(400, 400, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+        texte(425, 400, "Taille", "white", "center", taille=32, tag="Taille" )
+    if Dynamique:
+        rectangle(625, 350, 925, 450, "white", "green", 5, tag="Taille")
+        texte(775, 400, "Dynamique", "white", "center", taille=32, tag="Dynamique" )
+    else:
+        rectangle(625, 350, 925, 450, "white", "red", 5, tag="Taille")
+        texte(775, 400, "Dynamique", "white", "center", taille=32, tag="Dynamique" )
+    if Terminaison:
+        rectangle(275, 500, 575, 600, "white", "green", 5, tag="Terminaison")
+        texte(425, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+    else:
+        rectangle(275, 500, 575, 600, "white", "red", 5, tag="Terminaison")
+        texte(425, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+    if Obstacle:
+        rectangle(625, 500, 925, 600, "white", "green", 5, tag="Obstacle")
+        texte(775, 550, "Obstacle", "white", "center", taille=32, tag="Obstacle" )
+    else:
+        rectangle(625, 500, 925, 600, "white", "red", 5, tag="Obstacle")
+        texte(775, 550, "Obstacle", "white", "center", taille=32, tag="Obstacle" )
+
 
     rectangle(1130, 680, 1230, 715, "black","red", 1, "Variante")
     texte(1143, 685, "Retour", "white", "nw", taille="16", tag="Variante")
@@ -98,7 +111,7 @@ def variante_sablier():
             return x, y
     return False, False
 
-def variante_score(score, t_sablier):
+def variante_score(score, t_sablier, terminaison):
     fond_score(score)
     temps = time() + 2
     while time() < temps:
@@ -112,6 +125,9 @@ def variante_score(score, t_sablier):
             if t_sablier != None:
                 return x, y, time()
             return x, y
+        elif type_ev == 'Touche' and terminaison:
+            if ev == "t":
+                return "T", "T"
     efface("Scores")
     mise_a_jour()
 
@@ -129,8 +145,12 @@ def clic_hors_bordure(x, y):
     """ 
     Redemande au joueur de cliquer dans la zone lorsque les coordonnées 'x' et 'y' ne sont pas respectées.
     """
+    if 1130<=x<=1230 and 680<=y<=715:
+        return x, y
     while x<50 or x>1230 or y<100 or y>670:
         x, y, m = attente_clic()
+        if 1130<=x<=1230 and 680<=y<=715:
+            break
     return x, y
 
 def detection_tour(tour, listeJoueur, numero_tour, nb_max_tour):
@@ -223,12 +243,15 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
 def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
     """
     Cette fonction permet d'afficher les cercles et les intègre dans une liste pour garder les différentes informations tel que :
-    x, y : cordonnées x et y du clic du joueur dans le terrain de jeu
-    couleur : permet de récuperer la couleur du joueur
-    liste_cercle_vert : liste contenant les informations sur les différents cercle du joueur vert sur le terrain, nécessaire lors de l'ajout d'un nouveau cercle
-    liste_cercle_violet : liste contenant les informations sur les différents cercle du joueur violet sur le terrain
-    Les différentes informations sur les cercles sont stocké dans ces deux précédentes listes et sont de la forme :
-    un cercle = [x, y, rayon, id_cercle]
+    x, y : cordonnées x et if 50<=x<100:
+                x=100
+            elif 1180<x<=1230:
+                x=1180
+                
+            if 100<=y<150:
+                y=150
+            elif 620<y<=670:
+                y=620, id_cercle]
     rayon : indique le rayon du cercle prochainement généré
     """
     id_cercle = cercle(x, y, rayon, "black", couleur, 1)
@@ -244,6 +267,9 @@ def main():
     Sablier = False
     Scores = False
     Terminaison = False
+    Taille = False
+    Dynamique = False
+    Obstacle = False
     Quitter = False
     while True:
         x, y, z = attente_clic()
@@ -257,43 +283,69 @@ def main():
                 variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle)
                 while True:
                     x, y, z = attente_clic()
-                    if 250 <= x <= 550 and 200 <= y <= 300:
+                    if 275 <= x <= 575 and 200 <= y <= 300:
                         if Sablier == False :
                             efface("Sablier")
-                            rectangle(250, 200, 550, 300, "white", "green", 5, tag="Sablier")
-                            texte(400, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
+                            rectangle(275, 200, 575, 300, "white", "green", 5, tag="Sablier")
+                            texte(425, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
                             mise_a_jour()
                             Sablier = True
                         else:
                             efface("Sablier")
-                            rectangle(250, 200, 550, 300, "white", "red", 5, tag="Sablier")
-                            texte(400, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
+                            rectangle(275, 200, 575, 300, "white", "red", 5, tag="Sablier")
+                            texte(425, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
                             mise_a_jour()
                             Sablier = False
-                    elif 600 <= x <= 900 and 200 <= y <= 300:
+                    elif 625 <= x <= 925 and 200 <= y <= 300:
                         if not Scores:
                             efface("Scores")
-                            rectangle(600, 200, 900, 300, "white", "green", 5, tag="Scores")
-                            texte(750, 250, "Scores", "white", "center", taille=32, tag="Scores" )
+                            rectangle(625, 200, 925, 300, "white", "green", 5, tag="Scores")
+                            texte(775, 250, "Scores", "white", "center", taille=32, tag="Scores" )
                             mise_a_jour()
                             Scores = True
                         else:
                             efface("Scores")
-                            rectangle(600, 200, 900, 300, "white", "red", 5, tag="Scores")
-                            texte(750, 250, "Scores", "white", "center", taille=32, tag="Scores" )
+                            rectangle(625, 200, 925, 300, "white", "red", 5, tag="Scores")
+                            texte(775, 250, "Scores", "white", "center", taille=32, tag="Scores" )
                             mise_a_jour()
                             Scores = False
-                    elif 250 <= x <= 650 and 500 <= y <= 600:
+                    elif 275 <= x <= 575 and 350 <= y <= 450:
+                        if not Taille:
+                            efface("Taille")
+                            rectangle(275, 350, 575, 450, "white", "green", 5, tag="Taille")
+                            texte(425, 400, "Taille", "white", "center", taille=32, tag="Taille" )
+                            mise_a_jour()
+                            Taille = True
+                        else:
+                            efface("Taille")
+                            rectangle(275, 350, 575, 450, "white", "red", 5, tag="Taille")
+                            texte(425, 400, "Taille", "white", "center", taille=32, tag="Taille" )
+                            mise_a_jour()
+                            Taille = False
+                    elif 625 <= x <= 925 and 500 <= y <= 600:
+                        if not Obstacle:
+                            efface("Obstacle")
+                            rectangle(625, 500, 925, 600, "white", "green", 5, tag="Obstacle")
+                            texte(775, 550, "Obstacle", "white", "center", taille=32, tag="Obstacle" )
+                            mise_a_jour()
+                            Obstacle = True
+                        else:
+                            efface("Obstacle")
+                            rectangle(625, 500, 925, 600, "white", "red", 5, tag="Obstacle")
+                            texte(775, 550, "Obstacle", "white", "center", taille=32, tag="Obstacle" )
+                            mise_a_jour()
+                            Obstacle = False
+                    elif 275 <= x <= 575 and 500 <= y <= 600:
                         if Terminaison == False :
                             efface("Terminaison")
-                            rectangle(250, 500, 550, 600, "white", "green", 5, tag="Terminaison")
-                            texte(400, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+                            rectangle(275, 500, 575, 600, "white", "green", 5, tag="Terminaison")
+                            texte(425, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
                             mise_a_jour()
                             Terminaison = True
                         else:
                             efface("Terminaison")
-                            rectangle(250, 500, 550, 600, "white", "red", 5, tag="Terminaison")
-                            texte(400, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+                            rectangle(275, 500, 575, 600, "white", "red", 5, tag="Terminaison")
+                            texte(425, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
                             mise_a_jour()
                             Terminaison = False
                     elif 1130<=x<=1230 and 680<=y<=715:
@@ -367,7 +419,7 @@ def main():
                     x, y = clic_x(ev), clic_y(ev)
                 elif type_ev == 'Touche':
                     if touche(ev) == 's':
-                        x, y = variante_score(score, None) 
+                        x, y = variante_score(score, None, Terminaison) 
                         if x == None:
                             continue
                     elif Terminaison and detection_terminaison == 0 and touche(ev) == 't':
@@ -399,10 +451,10 @@ def main():
             if x == None:
                 x, y, w = attente_clic()
             
-            if 1130<=x<=1230 and 680<=y<=715:
-                break
 
             x, y = clic_hors_bordure(x, y)
+            if 1130<=x<=1230 and 680<=y<=715:
+                break
 
             if 50<=x<100:
                 x=100
