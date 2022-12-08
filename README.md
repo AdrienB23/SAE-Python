@@ -23,4 +23,5 @@ A / |C
   B
 
 Partie 2 :
-Suites aux exigences du second rendu, nous avons rajouter les six variantes
+Suites aux exigences du second rendu, nous avons rajouter les six variantes demandé. 
+Nous avons rencontrer plusieurs problèmes dont un majeure qui est la cohabitation des six différentes variantes car effectivement, nous devions faire en sorte qu'ils puissent marché indépendamment sans qu'il y ai de possible bug.
