@@ -89,7 +89,38 @@ def fond_sablier(temps, t1):
 def fond_score(score):
     texte(375, 50, "Score du Vert : " + str(score[0]), "black", "w", taille = 20, tag = "Scores")
     texte(675, 50, "Score du Violet : " + str(score[1]), "black", "w", taille = 20, tag = "Scores")
-    mise_a_jour()   
+    mise_a_jour()
+
+def fleches(direction, x, y):
+    rectangle(x, y, x+25, y+30, "black", "red", tag="Taille")
+    if direction == "gauche":
+        polygone([x+18, y+2, x+5, y+15, x+18, y+28], "darkred", "darkred", tag="Taille")
+    else:
+        polygone([x+7, y+2, x+20, y+15, x+7, y+28], "darkred", "darkred", tag="Taille")
+
+def fond_taille():
+    texte(50, 695, "Montant à poser:", "black", "w", taille=20, tag="Taille")
+    # Centaines
+    fleches("gauche", 260, 680)
+    fleches("droite", 320, 680)
+    rectangle(290, 680, 315, 710, "darkcyan", "floralwhite", tag="Taille")
+    texte(303, 695, "0", "black", "center", tag="centaine")
+    # Dizanes
+    fleches("gauche", 360, 680)
+    fleches("droite", 420, 680)
+    rectangle(390, 680, 415, 710, "darkcyan", "floralwhite", tag="Taille")
+    texte(403, 695, "0", "black", "center", tag="dizaine")
+    # Unites
+    fleches("gauche", 460, 680)
+    fleches("droite", 520, 680)
+    rectangle(490, 680, 515, 710, "darkcyan", "floralwhite", tag="Taille")
+    texte(503, 695, "0", "black", "center", tag="unite")
+    mise_a_jour()
+
+def epargne_joueurs(epargne_Vert, epargne_Violet):
+    efface("epargne")
+    texte(600, 695, "Montant Vert:" + str(epargne_Vert), "black", "w", taille=20, tag="epargne")
+    texte(850, 695, "Montant Violet:" + str(epargne_Violet), "black", "w", taille=20, tag="epargne")
 
 def variante_sablier():
     """ 
@@ -112,11 +143,6 @@ def variante_sablier():
     return False, False
 
 def variante_score(score, t_sablier):
-    """
-    Permet d'afficher un tableau des scores au moment ou la personne appuie sur la touche 's'
-    le paramètre score est une liste repertoriant les scores de chacun des joueurs
-
-    """
     fond_score(score)
     temps = time() + 2
     while time() < temps:
@@ -137,13 +163,31 @@ def variante_score(score, t_sablier):
         return None, None, t_sablier + 2
     return None, None
 
-def variante_terminaison(numero_tour):
-    """ 
-    Permet aux joueurs d'arrêter la partie dans les 5 tours suivants.
-    Le parametre numero_tour permet de récuperer le tour actuel.
-    """
-    nb_max_tour = numero_tour + 5
+def variante_taille(x, y, centaine, dizaine, unite):
+    efface("centaine")
+    efface("dizaine")
+    efface("unite")
+    if 680 <= y <= 710:
+        if 260 <= x <= 285:
+            centaine = (centaine-1) % 10
+        elif 320 <= x <= 345:
+            centaine = (centaine+1) % 10
+        elif 360 <= x <= 385:
+            dizaine = (dizaine-1) % 10
+        elif 420 <= x <= 445:
+            dizaine = (dizaine+1) % 10
+        elif 460 <= x <= 485:
+            unite = (unite-1) % 10
+        elif 520 <= x <= 545:
+            unite = (unite+1) % 10
+    texte(303, 695, str(centaine), "black", "center", tag="centaine")
+    texte(403, 695, str(dizaine), "black", "center", tag="dizaine")
+    texte(503, 695, str(unite), "black", "center", tag="unite")
     mise_a_jour()
+    return centaine, dizaine, unite
+
+def variante_terminaison(numero_tour):
+    nb_max_tour = numero_tour + 5
     return nb_max_tour
 
 def creer_obstacles():
@@ -200,7 +244,6 @@ def variante_dynamique(liste_cercle_un, liste_cercle_deux, couleur, Obstacle, li
                 liste_cercle_un[i] = [x, y, r, id_cercle]
     return liste_cercle_un
         
-
 ######################## Fonctions de detection ##################################################################################
 
 def clic_hors_bordure(x, y):
@@ -245,6 +288,9 @@ def detection_cercle_inscrit(alterner_liste_joueur):
 
 ######################## Fonctions agissant directement sur le terrain de jeu ####################################################
 def calcul_extremite_cercle(cercle, r):
+    """
+    Cette fonction permet de créer une liste avec les cordonnée des quatres extrémité d'un cercle
+    """
     liste = [cercle[0]-r,cercle[0]+r,cercle[1]-r,cercle[1]+r]
     return liste
 
@@ -313,9 +359,15 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
 def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
     """
     Cette fonction permet d'afficher les cercles et les intègre dans une liste pour garder les différentes informations tel que :
-    x, y : cordonnées x et y
-    couleur : la couleur du joueur pour bien les différencier
-    les deux listes de cercles qui permet d'ajouter les informations des différents cercles
+    x, y : cordonnées x et if 50<=x<100:
+                x=100
+            elif 1180<x<=1230:
+                x=1180
+                
+            if 100<=y<150:
+                y=150
+            elif 620<y<=670:
+                y=620, id_cercle]
     rayon : indique le rayon du cercle prochainement généré
     """
     id_cercle = cercle(x, y, rayon, "black", couleur, 1)
@@ -442,6 +494,7 @@ def main():
                 break
 
     if Quitter == False:
+        # Variables
         listeJoueur = ["Joueur Vert","Joueur Violet"]
         couleurJoueur = ["mediumseagreen", "mediumpurple"]
         liste_cercle_violet = []
@@ -454,7 +507,15 @@ def main():
         alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
         detection_terminaison = 0
         detection_obstacle = 0
-
+        # Variante taille de boule
+        if Taille:
+            centaine = 0
+            dizaine = 0
+            unite = 0
+            fond_taille()
+            epargne_vert = 100
+            epargne_violet = 100
+            epargne_joueurs(epargne_vert, epargne_violet)
         while numero_tour < nb_max_tour+1:
             x = None
             detection_tour(tour, listeJoueur, numero_tour, nb_max_tour)
@@ -468,9 +529,11 @@ def main():
                     fond_sablier(temps, time() - t)
                     if type_ev == "ClicGauche":
                         x, y = clic_x(ev), clic_y(ev)
+                        if Taille:
+                            centaine, dizaine, unite = variante_taille(x, y, centaine, dizaine, unite)
                         if 1130<=x<=1230 and 680<=y<=715:
                             break
-                        if x<50 or x>1230 or y<100 or y>670:
+                        elif x<50 or x>1230 or y<100 or y>670:
                             continue
                         break
                     elif type_ev == "Touche":
@@ -523,7 +586,7 @@ def main():
             elif Obstacle and detection_obstacle == 0:
                 liste_obstacle = creer_obstacles()
                 detection_obstacle = 1
-              
+
             elif Terminaison and detection_terminaison == 0:
                 ev = donne_evenement()
                 mise_a_jour()
@@ -538,10 +601,30 @@ def main():
                         continue        
                 else:
                     continue
-
             if x == None:
                 x, y, w = attente_clic()
             
+            if Taille:
+                centaine, dizaine, unite = variante_taille(x, y, centaine, dizaine, unite)
+                depense = centaine*100 + dizaine*10 + unite
+                if 1130<=x<=1230 and 680<=y<=715:
+                    break
+                elif x < 50 or x > 1230 or y < 100 or y > 670:
+                    continue
+                elif 50 <= x <= 1230 and 100 <= y <= 670:
+                    if tour == 0:
+                        if epargne_vert - depense < 0:
+                            continue
+                        else:
+                            epargne_vert -= depense
+                            rayon = depense
+                    else:
+                        if epargne_violet - depense < 0:
+                            continue
+                        else:
+                            epargne_violet -= depense
+                            rayon = depense
+                    epargne_joueurs(epargne_vert, epargne_violet)
 
             x, y = clic_hors_bordure(x, y)
             if 1130<=x<=1230 and 680<=y<=715:
@@ -574,10 +657,10 @@ def main():
 
             if Obstacle == True and detecter_intersection(x, y, rayon, liste_obstacle) == True:
                 intersection_cercle += 1
-
+            
             alterner_liste_joueur, b = b, alterner_liste_joueur
 
-            if intersection_cercle == 0:
+            if intersection_cercle == 0 and rayon != 0:
                 cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
 
                 detection_cercle_inscrit(alterner_liste_joueur)
@@ -594,7 +677,7 @@ def main():
                 else:
                     texte(640, 50, "Egalité", "white", "center")
                     attente_clic()
-            
+                        
             if Dynamique == True:
                 variante_dynamique(alterner_liste_joueur, b, couleurJoueur[tour], Obstacle, liste_obstacle)
                 variante_dynamique(b, alterner_liste_joueur, couleurJoueur[(tour+1)%2], Obstacle, liste_obstacle)
