@@ -21,3 +21,6 @@ et donc nous pouvons déterminer le centre du second cercle en répétant ces d�
 A / |C
  /__|
   B
+
+Partie 2 :
+Suites aux exigences du second rendu, nous avons rajouter les six variantes
