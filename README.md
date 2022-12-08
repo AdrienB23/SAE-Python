@@ -25,3 +25,7 @@ A / |C
 Partie 2 :
 Suites aux exigences du second rendu, nous avons rajouter les six variantes demandé. 
 Nous avons rencontrer plusieurs problèmes dont un majeure qui est la cohabitation des six différentes variantes car effectivement, nous devions faire en sorte qu'ils puissent marché indépendamment sans qu'il y ai de possible bug.
+
+Règles :
+Pour nos variantes nous avons décider d'établir arbitrairement certaine règles comme :
+Variante taille : Le joueur ne peut placer de cercle si son montant a poser est égal a 0, cependant il peut encore scinder un cercle a condition que son montant a poser soit mis a 0.
