@@ -29,7 +29,7 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
     texte(0,0,"",tag="tour2")
     mise_a_jour()
 
-def variantes(Sablier, Scores): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
+def variantes(Sablier, Scores, Terminaison): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
     efface("Variante")
     rectangle(2, 2, 1277, 150, "white", epaisseur=5, tag="Variante")
     texte(640, 75, "Variantes", "white", "center", taille=50, tag="Variante")
@@ -45,6 +45,12 @@ def variantes(Sablier, Scores): # Affiche le menu des variantes pour choisir une
     else:
         rectangle(600, 200, 900, 300, "white", "red", 5, tag="Scores")
         texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
+    if Terminaison:
+        rectangle(250, 500, 650, 600, "white", "green", 5, tag="Terminaison")
+        texte(450, 550, "Terminaison", "white", "center", taille=40, tag="Terminaison" )
+    else:
+        rectangle(250, 500, 650, 600, "white", "red", 5, tag="Terminaison")
+        texte(450, 550, "Terminaison", "white", "center", taille=40, tag="Terminaison" )
 
     rectangle(1130, 680, 1230, 715, "black","red", 1, "Variante")
     texte(1143, 685, "Retour", "white", "nw", taille="16", tag="Variante")
@@ -106,6 +112,10 @@ def variante_score(score, t_sablier):
     if t_sablier != None:
         return None, None, t_sablier + 2
     return None, None
+
+def variante_terminaison(numero_tour):
+    nb_max_tour = numero_tour + 5
+    return nb_max_tour
 
 ######################## Fonctions de detection ##################################################################################
 
@@ -227,6 +237,7 @@ def main():
     fond_menu()
     Sablier = False
     Scores = False
+    Terminaison = False
     Quitter = False
     while True:
         x, y, z = attente_clic()
@@ -237,7 +248,7 @@ def main():
                 break
             elif 350 <= y <= 450:
                 efface("Menu")
-                variantes(Sablier, Scores)
+                variantes(Sablier, Scores, Terminaison)
                 while True:
                     x, y, z = attente_clic()
                     if 250 <= x <= 550 and 200 <= y <= 300:
@@ -266,10 +277,24 @@ def main():
                             texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
                             mise_a_jour()
                             Scores = False
+                    elif 250 <= x <= 650 and 500 <= y <= 600:
+                        if Terminaison == False :
+                            efface("Terminaison")
+                            rectangle(250, 500, 650, 600, "white", "green", 5, tag="Terminaison")
+                            texte(450, 550, "Terminaison", "white", "center", taille=40, tag="Terminaison" )
+                            mise_a_jour()
+                            Terminaison = True
+                        else:
+                            efface("Terminaison")
+                            rectangle(250, 500, 650, 600, "white", "red", 5, tag="Terminaison")
+                            texte(450, 550, "Terminaison", "white", "center", taille=40, tag="Terminaison" )
+                            mise_a_jour()
+                            Terminaison = False
                     elif 1130<=x<=1230 and 680<=y<=715:
                         efface("Variante")
                         efface("Sablier")
                         efface("Scores")
+                        efface("Terminaison")
                         fond_menu()
                         mise_a_jour()
                         break
@@ -285,10 +310,11 @@ def main():
         liste_cercle_vert = []
         tour, numero_tour = 0, 1
         rayon = 50
-        nb_max_tour = 5
+        nb_max_tour = 10
         score=[0, 0]
-        inter, intersection_vert, intersection_violet = 0, 0, 0
+        inter = 0
         alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
+        detection_terminaison = 0
 
         while numero_tour < nb_max_tour+1:
             x = None
@@ -314,6 +340,13 @@ def main():
                             if x != None:
                                 break
                             continue
+                        if Terminaison and detection_terminaison == 0 and touche(ev) == 't':
+                            nb_max_tour = variante_terminaison(numero_tour)
+                            detection_terminaison += 1
+                            if x != None:
+                                break
+                            continue
+
                 if x == None:
                     if tour == 1:
                         numero_tour += 1
@@ -333,7 +366,22 @@ def main():
                         continue        
                 else:
                     continue
-            
+
+            elif Terminaison and detection_terminaison == 0:
+                ev = donne_evenement()
+                mise_a_jour()
+                type_ev = type_evenement(ev)
+                if type_ev == 'ClicGauche':
+                    x, y = clic_x(ev), clic_y(ev)
+                elif type_ev == 'Touche':
+                    if touche(ev) == 't':
+                        nb_max_tour = variante_terminaison(numero_tour)
+                        detection_terminaison += 1
+                    else:
+                        continue        
+                else:
+                    continue
+
             if x == None:
                 x, y, w = attente_clic()
             
@@ -380,7 +428,7 @@ def main():
 
             score[0] = len(calcul_score(liste_cercle_vert))
             score[1] = len(calcul_score(liste_cercle_violet))
-            if numero_tour == 6 and tour == 1:
+            if numero_tour == nb_max_tour+1 and tour == 1:
                 if score[0] > score[1]:
                     texte(640, 50, "Le Joueur Vert gagne", "white", "center")
                     attente_clic()
@@ -394,7 +442,6 @@ def main():
             tour = (tour+1) % 2 
 
             mise_a_jour()
-        print(score)
         ferme_fenetre()
 
 if __name__ == '__main__':
