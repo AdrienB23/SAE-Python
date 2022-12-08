@@ -29,28 +29,34 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
     texte(0,0,"",tag="tour2")
     mise_a_jour()
 
-def variantes(Sablier, Scores, Terminaison): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
+def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
     efface("Variante")
     rectangle(2, 2, 1277, 150, "white", epaisseur=5, tag="Variante")
     texte(640, 75, "Variantes", "white", "center", taille=50, tag="Variante")
     if Sablier:
-        rectangle(250, 200, 550, 300, "white", "green", 5, tag="Sablier")
-        texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+        rectangle(275, 200, 575, 300, "white", "green", 5, tag="Sablier")
+        texte(400, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
     else:
-        rectangle(250, 200, 550, 300, "white", "red", 5, tag="Sablier")
-        texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+        rectangle(275, 200, 575, 300, "white", "red", 5, tag="Sablier")
+        texte(400, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
     if Scores:
-        rectangle(600, 200, 900, 300, "white", "green", 5, tag="Scores")
-        texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
+        rectangle(625, 200, 925, 300, "white", "green", 5, tag="Scores")
+        texte(750, 250, "Scores", "white", "center", taille=32, tag="Scores" )
     else:
-        rectangle(600, 200, 900, 300, "white", "red", 5, tag="Scores")
-        texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
+        rectangle(625, 200, 925, 300, "white", "red", 5, tag="Scores")
+        texte(750, 250, "Scores", "white", "center", taille=32, tag="Scores" )
     if Terminaison:
-        rectangle(250, 500, 650, 600, "white", "green", 5, tag="Terminaison")
-        texte(450, 550, "Terminaison", "white", "center", taille=40, tag="Terminaison" )
+        rectangle(275, 500, 575, 600, "white", "green", 5, tag="Terminaison")
+        texte(400, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
     else:
-        rectangle(250, 500, 650, 600, "white", "red", 5, tag="Terminaison")
-        texte(450, 550, "Terminaison", "white", "center", taille=40, tag="Terminaison" )
+        rectangle(275, 500, 575, 600, "white", "red", 5, tag="Terminaison")
+        texte(400, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+    if Taille:
+        rectangle(275, 350, 575, 450, "white", "green", 5, tag="Taille")
+        texte(400, 400, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
+    else:
+        rectangle(275, 350, 575, 450, "white", "red", 5, tag="Taille")
+        texte(400, 400, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
 
     rectangle(1130, 680, 1230, 715, "black","red", 1, "Variante")
     texte(1143, 685, "Retour", "white", "nw", taille="16", tag="Variante")
@@ -68,8 +74,8 @@ def fond_sablier(temps, t1):
     mise_a_jour()
 
 def fond_score(score):
-    texte(325, 50, "Score du Vert : " + str(score[0]), "mediumseagreen", "w", taille = 30, tag = "Scores")
-    texte(700, 50, "Score du Violet : " + str(score[1]), "mediumpurple", "w", taille = 30, tag = "Scores")
+    texte(375, 50, "Score du Vert : " + str(score[0]), "black", "w", taille = 20, tag = "Scores")
+    texte(675, 50, "Score du Violet : " + str(score[1]), "black", "w", taille = 20, tag = "Scores")
     mise_a_jour()   
 
 def variante_sablier():
@@ -248,46 +254,46 @@ def main():
                 break
             elif 350 <= y <= 450:
                 efface("Menu")
-                variantes(Sablier, Scores, Terminaison)
+                variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle)
                 while True:
                     x, y, z = attente_clic()
                     if 250 <= x <= 550 and 200 <= y <= 300:
                         if Sablier == False :
                             efface("Sablier")
                             rectangle(250, 200, 550, 300, "white", "green", 5, tag="Sablier")
-                            texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+                            texte(400, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
                             mise_a_jour()
                             Sablier = True
                         else:
                             efface("Sablier")
                             rectangle(250, 200, 550, 300, "white", "red", 5, tag="Sablier")
-                            texte(400, 250, "Sablier", "white", "center", taille=40, tag="Sablier")
+                            texte(400, 250, "Sablier", "white", "center", taille=32, tag="Sablier")
                             mise_a_jour()
                             Sablier = False
                     elif 600 <= x <= 900 and 200 <= y <= 300:
                         if not Scores:
                             efface("Scores")
                             rectangle(600, 200, 900, 300, "white", "green", 5, tag="Scores")
-                            texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
+                            texte(750, 250, "Scores", "white", "center", taille=32, tag="Scores" )
                             mise_a_jour()
                             Scores = True
                         else:
                             efface("Scores")
                             rectangle(600, 200, 900, 300, "white", "red", 5, tag="Scores")
-                            texte(750, 250, "Scores", "white", "center", taille=40, tag="Scores" )
+                            texte(750, 250, "Scores", "white", "center", taille=32, tag="Scores" )
                             mise_a_jour()
                             Scores = False
                     elif 250 <= x <= 650 and 500 <= y <= 600:
                         if Terminaison == False :
                             efface("Terminaison")
-                            rectangle(250, 500, 650, 600, "white", "green", 5, tag="Terminaison")
-                            texte(450, 550, "Terminaison", "white", "center", taille=40, tag="Terminaison" )
+                            rectangle(250, 500, 550, 600, "white", "green", 5, tag="Terminaison")
+                            texte(400, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
                             mise_a_jour()
                             Terminaison = True
                         else:
                             efface("Terminaison")
-                            rectangle(250, 500, 650, 600, "white", "red", 5, tag="Terminaison")
-                            texte(450, 550, "Terminaison", "white", "center", taille=40, tag="Terminaison" )
+                            rectangle(250, 500, 550, 600, "white", "red", 5, tag="Terminaison")
+                            texte(400, 550, "Terminaison", "white", "center", taille=32, tag="Terminaison" )
                             mise_a_jour()
                             Terminaison = False
                     elif 1130<=x<=1230 and 680<=y<=715:
@@ -361,9 +367,17 @@ def main():
                     x, y = clic_x(ev), clic_y(ev)
                 elif type_ev == 'Touche':
                     if touche(ev) == 's':
-                        x, y = variante_score(score, None)
+                        x, y = variante_score(score, None) 
+                        if x == None:
+                            continue
+                    elif Terminaison and detection_terminaison == 0 and touche(ev) == 't':
+                        nb_max_tour = variante_terminaison(numero_tour)
+                        detection_terminaison += 1
+                        if x != None:
+                            break
+                        continue
                     else:
-                        continue        
+                        continue
                 else:
                     continue
 
