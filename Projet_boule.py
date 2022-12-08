@@ -89,7 +89,38 @@ def fond_sablier(temps, t1):
 def fond_score(score):
     texte(375, 50, "Score du Vert : " + str(score[0]), "black", "w", taille = 20, tag = "Scores")
     texte(675, 50, "Score du Violet : " + str(score[1]), "black", "w", taille = 20, tag = "Scores")
-    mise_a_jour()   
+    mise_a_jour()
+
+def fleches(direction, x, y):
+    rectangle(x, y, x+25, y+30, "black", "red", tag="Taille")
+    if direction == "gauche":
+        polygone([x+18, y+2, x+5, y+15, x+18, y+28], "darkred", "darkred", tag="Taille")
+    else:
+        polygone([x+7, y+2, x+20, y+15, x+7, y+28], "darkred", "darkred", tag="Taille")
+
+def fond_taille():
+    texte(50, 695, "Montant à poser:", "black", "w", taille=20, tag="Taille")
+    # Centaines
+    fleches("gauche", 260, 680)
+    fleches("droite", 320, 680)
+    rectangle(290, 680, 315, 710, "darkcyan", "floralwhite", tag="Taille")
+    texte(303, 695, "0", "black", "center", tag="centaine")
+    # Dizanes
+    fleches("gauche", 360, 680)
+    fleches("droite", 420, 680)
+    rectangle(390, 680, 415, 710, "darkcyan", "floralwhite", tag="Taille")
+    texte(403, 695, "0", "black", "center", tag="dizaine")
+    # Unites
+    fleches("gauche", 460, 680)
+    fleches("droite", 520, 680)
+    rectangle(490, 680, 515, 710, "darkcyan", "floralwhite", tag="Taille")
+    texte(503, 695, "0", "black", "center", tag="unite")
+    mise_a_jour()
+
+def epargne_joueurs(epargne_Vert, epargne_Violet):
+    efface("epargne")
+    texte(600, 695, "Montant Vert:" + str(epargne_Vert), "black", "w", taille=20, tag="epargne")
+    texte(850, 695, "Montant Violet:" + str(epargne_Violet), "black", "w", taille=20, tag="epargne")
 
 def variante_sablier():
     """ 
@@ -111,7 +142,7 @@ def variante_sablier():
             return x, y
     return False, False
 
-def variante_score(score, t_sablier, terminaison):
+def variante_score(score, t_sablier):
     fond_score(score)
     temps = time() + 2
     while time() < temps:
@@ -125,15 +156,35 @@ def variante_score(score, t_sablier, terminaison):
             if t_sablier != None:
                 return x, y, time()
             return x, y
-        elif type_ev == 'Touche' and terminaison:
-            if ev == "t":
-                return "T", "T"
     efface("Scores")
     mise_a_jour()
 
     if t_sablier != None:
         return None, None, t_sablier + 2
     return None, None
+
+def variante_taille(x, y, centaine, dizaine, unite):
+    efface("centaine")
+    efface("dizaine")
+    efface("unite")
+    if 680 <= y <= 710:
+        if 260 <= x <= 285:
+            centaine = (centaine-1) % 10
+        elif 320 <= x <= 345:
+            centaine = (centaine+1) % 10
+        elif 360 <= x <= 385:
+            dizaine = (dizaine-1) % 10
+        elif 420 <= x <= 445:
+            dizaine = (dizaine+1) % 10
+        elif 460 <= x <= 485:
+            unite = (unite-1) % 10
+        elif 520 <= x <= 545:
+            unite = (unite+1) % 10
+    texte(303, 695, str(centaine), "black", "center", tag="centaine")
+    texte(403, 695, str(dizaine), "black", "center", tag="dizaine")
+    texte(503, 695, str(unite), "black", "center", tag="unite")
+    mise_a_jour()
+    return centaine, dizaine, unite
 
 def variante_terminaison(numero_tour):
     nb_max_tour = numero_tour + 5
@@ -378,6 +429,7 @@ def main():
                 break
 
     if Quitter == False:
+        # Variables
         listeJoueur = ["Joueur Vert","Joueur Violet"]
         couleurJoueur = ["mediumseagreen", "mediumpurple"]
         liste_cercle_violet = []
@@ -389,7 +441,15 @@ def main():
         inter = 0
         alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
         detection_terminaison = 0
-
+        # Variante taille de boule
+        if Taille:
+            centaine = 0
+            dizaine = 0
+            unite = 0
+            fond_taille()
+            epargne_vert = 100
+            epargne_violet = 100
+            epargne_joueurs(epargne_vert, epargne_violet)
         while numero_tour < nb_max_tour+1:
             x = None
             detection_tour(tour, listeJoueur, numero_tour, nb_max_tour)
@@ -403,9 +463,11 @@ def main():
                     fond_sablier(temps, time() - t)
                     if type_ev == "ClicGauche":
                         x, y = clic_x(ev), clic_y(ev)
+                        if Taille:
+                            centaine, dizaine, unite = variante_taille(x, y, centaine, dizaine, unite)
                         if 1130<=x<=1230 and 680<=y<=715:
                             break
-                        if x<50 or x>1230 or y<100 or y>670:
+                        elif x<50 or x>1230 or y<100 or y>670:
                             continue
                         break
                     elif type_ev == "Touche":
@@ -420,7 +482,6 @@ def main():
                             if x != None:
                                 break
                             continue
-
                 if x == None:
                     if tour == 1:
                         numero_tour += 1
@@ -435,7 +496,7 @@ def main():
                     x, y = clic_x(ev), clic_y(ev)
                 elif type_ev == 'Touche':
                     if touche(ev) == 's':
-                        x, y = variante_score(score, None, Terminaison) 
+                        x, y = variante_score(score, None) 
                         if x == None:
                             continue
                     elif Terminaison and detection_terminaison == 0 and touche(ev) == 't':
@@ -463,10 +524,30 @@ def main():
                         continue        
                 else:
                     continue
-
             if x == None:
                 x, y, w = attente_clic()
             
+            if Taille:
+                centaine, dizaine, unite = variante_taille(x, y, centaine, dizaine, unite)
+                depense = centaine*100 + dizaine*10 + unite
+                if 1130<=x<=1230 and 680<=y<=715:
+                    break
+                elif x < 50 or x > 1230 or y < 100 or y > 670:
+                    continue
+                elif 50 <= x <= 1230 and 100 <= y <= 670:
+                    if tour == 0:
+                        if epargne_vert - depense < 0:
+                            continue
+                        else:
+                            epargne_vert -= depense
+                            rayon = depense
+                    else:
+                        if epargne_violet - depense < 0:
+                            continue
+                        else:
+                            epargne_violet -= depense
+                            rayon = depense
+                    epargne_joueurs(epargne_vert, epargne_violet)
 
             x, y = clic_hors_bordure(x, y)
             if 1130<=x<=1230 and 680<=y<=715:
@@ -498,7 +579,7 @@ def main():
                     break
             alterner_liste_joueur, b = b, alterner_liste_joueur
 
-            if intersection_cercle == 0:
+            if intersection_cercle == 0 and rayon != 0:
                 cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
 
                 detection_cercle_inscrit(alterner_liste_joueur)
