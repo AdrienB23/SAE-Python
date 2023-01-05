@@ -7,6 +7,8 @@ largeur_fenetre = 1280
 hauteur_fenetre = 720
 coef_largeur = largeur_fenetre/1280
 coef_hauteur = hauteur_fenetre/720
+hauteur = 500
+largeur = 500
 
 ######################## Fonction d'aspect graphique des différents affichages ###################################################
 
@@ -29,9 +31,6 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
 
     rectangle(int(1130*coef_largeur), int(680*coef_hauteur), int(1230*coef_largeur), int(715*coef_hauteur), "black","red", 1, "Retour Jeu")
     texte(int(1180*coef_largeur), int(698*coef_hauteur), "Retour", "white", "c", taille=int(16*coef_hauteur), tag="Retour Jeu")
-
-    texte(0,0,"",tag="tour")
-    texte(0,0,"",tag="tour2")
     mise_a_jour()
 
 def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
@@ -353,7 +352,6 @@ def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle
                         mise_a_jour()
                         break
             elif int(500*coef_hauteur) <= y <= int(600*coef_hauteur):
-                ferme_fenetre()
                 Quitter = True
                 break
     return Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter
@@ -365,6 +363,13 @@ def clic_hors_bordure(x, y):
     if int(1130*coef_largeur) <= x <= int(1230*coef_largeur) and int(680*coef_hauteur) <= y <= int(715*coef_hauteur):
         return x, y
     while x < int(50*coef_largeur) or x > int(1230*coef_largeur) or y < int(100*coef_hauteur) or y > int(670*coef_hauteur):
+        x, y, m = attente_clic()
+        if int(1130*coef_largeur) <= x <= int(1230*coef_largeur) and int(680*coef_hauteur) <= y <= int(715*coef_hauteur):
+            break
+    return x, y
+
+def clic_hors_retour(x,y):
+    while x > int(1230*coef_largeur) or x < int(1130*coef_largeur) or y < int(680*coef_hauteur) or y >int(715*coef_hauteur):
         x, y, m = attente_clic()
         if int(1130*coef_largeur) <= x <= int(1230*coef_largeur) and int(680*coef_hauteur) <= y <= int(715*coef_hauteur):
             break
@@ -693,10 +698,10 @@ def main():
                         else:
                             texte(int(640*coef_largeur), int(50*coef_hauteur), "Egalité", "white", "center", taille=int(24*coef_hauteur), tag="Jeu")
                             x, y, z = attente_clic()
-                        x, y = clic_hors_bordure(x, y)
-                        if int(1130*coef_largeur) <= x <= int(1230*coef_largeur) and int(680*coef_hauteur) <= y <= int(715*coef_hauteur):
-                            Retour = True
-                            break
+                        
+                        x, y = clic_hors_retour(x,y)
+                        Retour = True
+                        
                     if Dynamique:
                         variante_dynamique(alterner_liste_joueur, b, couleurJoueur[tour], Obstacle, liste_obstacle)
                         variante_dynamique(b, alterner_liste_joueur, couleurJoueur[(tour+1)%2], Obstacle, liste_obstacle)
@@ -704,8 +709,9 @@ def main():
                     tour = (tour+1) % 2 
 
                     mise_a_jour()
+            
             efface("Jeu")
-
+            mise_a_jour()
         else:
             break
             
