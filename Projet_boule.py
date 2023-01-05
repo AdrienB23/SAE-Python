@@ -686,13 +686,17 @@ def main():
                     if numero_tour == nb_max_tour+1 and tour == 1:
                         if score[0] > score[1]:
                             texte(int(640*coef_largeur), int(50*coef_hauteur),"Le Joueur Vert gagne", "white", "center",  taille=int(24*coef_hauteur), tag="Jeu")
-                            attente_clic()
+                            x, y, z = attente_clic()
                         elif score[1] > score[0]:
                             texte(int(640*coef_largeur), int(50*coef_hauteur), "Le Joueur Violet gagne", "white", "center",  taille=int(24*coef_hauteur), tag="Jeu")
-                            attente_clic()
+                            x, y, z = attente_clic()
                         else:
                             texte(int(640*coef_largeur), int(50*coef_hauteur), "Egalité", "white", "center", taille=int(24*coef_hauteur), tag="Jeu")
-                            attente_clic()
+                            x, y, z = attente_clic()
+                        x, y = clic_hors_bordure(x, y)
+                        if int(1130*coef_largeur) <= x <= int(1230*coef_largeur) and int(680*coef_hauteur) <= y <= int(715*coef_hauteur):
+                            Retour = True
+                            break
                     if Dynamique:
                         variante_dynamique(alterner_liste_joueur, b, couleurJoueur[tour], Obstacle, liste_obstacle)
                         variante_dynamique(b, alterner_liste_joueur, couleurJoueur[(tour+1)%2], Obstacle, liste_obstacle)
