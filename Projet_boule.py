@@ -2,14 +2,32 @@ from upemtk import *
 from random import *
 from time import *
 from math import *
+import os.path
 
-largeur_fenetre = 1280
-hauteur_fenetre = 720
+
+fichier = "config.txt"
+fi = open(fichier)
+config = []
+for lignes in fi:
+    config.append(lignes[:-1])
+fi.close()     
+for i in range(len(config)):
+    config[i] = config[i].split(":")
+
+largeur_fenetre = int(config[0][-1])
+hauteur_fenetre = int(config[1][-1])
 coef_largeur = largeur_fenetre/1280
 coef_hauteur = hauteur_fenetre/720
-hauteur = 500
-largeur = 500
 
+largeur = int(config[2][-1])
+hauteur = int(config[3][-1])
+
+largeur_fenetre = int(config[0][-1])
+hauteur_fenetre = int(config[1][-1])
+coef_largeur = largeur_fenetre/1280
+coef_hauteur = hauteur_fenetre/720
+
+couleurJoueur = [config[5][-1].strip(), config[6][-1].strip()]
 ######################## Fonction d'aspect graphique des différents affichages ###################################################
 
 def fond_menu(): # Affiche le menu du jeu
@@ -34,7 +52,7 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
     mise_a_jour()
 
 def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
-    efface("Variante")
+    efface("Variante Sablier Scores Taille Dynamique Terminaison Obstacle")
     rectangle(int(2*coef_largeur),int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Variante")
     texte(int(640*coef_largeur), int(75*coef_hauteur), "Variantes", "white", "center", taille=int(50*coef_hauteur), tag="Variante")
     if Sablier:
@@ -74,7 +92,6 @@ def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affi
         rectangle(int(625*coef_largeur), int(500*coef_hauteur),int( 925*coef_largeur), int(600*coef_hauteur), "white", "red", 5, tag="Obstacle")
         texte(int(775*coef_largeur), int(550*coef_hauteur), "Obstacle", "white", "center", taille=int(32*coef_hauteur), tag="Obstacle" )
 
-
     rectangle(int(1130*coef_largeur), int(680*coef_hauteur),int( 1230*coef_largeur), int(715*coef_hauteur), "black","red", 1, "Variante")
     texte(int(1143*coef_largeur), int(685*coef_hauteur), "Retour", "white", "nw", taille=int(16*coef_hauteur), tag="Variante")
     mise_a_jour()
@@ -91,8 +108,8 @@ def fond_sablier(temps, t1):
     mise_a_jour()
 
 def fond_score(score):
-    texte(int(375*coef_largeur), int(50*coef_hauteur), "Score du Vert : " + str(score[0]), "black", "w", taille = int(20*coef_hauteur), tag = "Scores Jeu")
-    texte(int(675*coef_largeur), int(50*coef_hauteur), "Score du Violet : " + str(score[1]), "black", "w", taille = int(20*coef_hauteur), tag = "Scores Jeu")
+    texte(int(300*coef_largeur), int(50*coef_hauteur), "Score du Joueur 1 : " + str(score[0]), "black", "w", taille = int(20*coef_hauteur), tag = "Scores Jeu")
+    texte(int(675*coef_largeur), int(50*coef_hauteur), "Score du Jouer 2 : " + str(score[1]), "black", "w", taille = int(20*coef_hauteur), tag = "Scores Jeu")
     mise_a_jour()
 
 def fleches(direction, x, y):
@@ -126,25 +143,6 @@ def epargne_joueurs(epargne_Vert, epargne_Violet):
     texte(int(600*coef_largeur), int(695*coef_hauteur), "Montant Vert:" + str(epargne_Vert), "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
     texte(int(850*coef_largeur), int(695*coef_hauteur), "Montant Violet:" + str(epargne_Violet), "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
 
-def variante_sablier():
-    """ 
-    Renvoie les coordonnées du clic et fait appliquer au programme la variante 'Sablier' 
-    si elle a été sélectionnée dans le menu.
-    """
-    temps=time() + 10
-    while time() < temps:
-        ev = donne_evenement()
-        mise_a_jour()
-        type_ev = type_evenement(ev)
-        fond_sablier(temps, time())
-        if type_ev == "ClicGauche":
-            x, y = clic_x(ev), clic_y(ev)
-            if int(1130*coef_largeur) <= x <= int(1230*coef_largeur) and int(680*coef_hauteur) <=y<= int(715*coef_hauteur):
-                return x, y
-            if x < int(50*coef_largeur) or x > int(1230*coef_largeur) or y < int(100*coef_hauteur) or y > int(670*coef_hauteur):
-                continue
-            return x, y
-    return False, False
 
 def variante_score(score, t_sablier):
     fond_score(score)
@@ -263,82 +261,34 @@ def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle
                 while True:
                     x, y, z = attente_clic()
                     if int(275*coef_largeur) <= x <= int(575*coef_largeur) and int(200*coef_hauteur) <= y <= int(300*coef_hauteur):
-                        if Sablier == False :
-                            efface("Sablier")
-                            rectangle(int(275*coef_largeur), int(200*coef_hauteur) ,int(575*coef_largeur), int(300*coef_hauteur), "white", "green", 5, tag="Sablier")
-                            texte(int(425*coef_largeur), int(250*coef_hauteur), "Sablier", "white", "center", taille=int(32*coef_hauteur), tag="Sablier")
-                            mise_a_jour()
+                        if not Sablier:
                             Sablier = True
                         else:
-                            efface("Sablier")
-                            rectangle(int(275*coef_largeur), int(200*coef_hauteur), int(575*coef_largeur), int(300*coef_hauteur), "white", "red", 5, tag="Sablier")
-                            texte(int(425*coef_largeur), int(250*coef_hauteur), "Sablier", "white", "center", taille=int(32*coef_hauteur), tag="Sablier")
-                            mise_a_jour()
                             Sablier = False
                     elif int(625*coef_largeur) <= x <= int(925*coef_largeur) and int(200*coef_hauteur) <= y <= int(300*coef_hauteur):
                         if not Scores:
-                            efface("Scores")
-                            rectangle(int(625*coef_largeur), int(200*coef_hauteur), int(925*coef_largeur), int(300*coef_hauteur), "white", "green", 5, tag="Scores")
-                            texte(int(775*coef_largeur), int(250*coef_hauteur), "Scores", "white", "center", taille=int(32*coef_hauteur), tag="Scores")
-                            mise_a_jour()
                             Scores = True
                         else:
-                            efface("Scores")
-                            rectangle(int(625*coef_largeur), int(200*coef_hauteur), int( 925*coef_largeur), int(300*coef_hauteur), "white", "red", 5, tag="Scores")
-                            texte(int(775*coef_largeur), int(250*coef_hauteur), "Scores", "white", "center", taille=int(32*coef_hauteur), tag="Scores")
-                            mise_a_jour()
                             Scores = False
                     elif int(275*coef_largeur) <= x <= int(575*coef_largeur) and int(350*coef_hauteur) <= y <= int(450*coef_hauteur):
                         if not Taille:
-                            efface("Taille")
-                            rectangle(int(275*coef_largeur), int(350*coef_hauteur), int(575*coef_largeur), int(450*coef_hauteur), "white", "green", 5, tag="Taille")
-                            texte(int(425*coef_largeur), int(400*coef_hauteur), "Taille", "white", "center", taille=int(32*coef_hauteur), tag="Taille" )
-                            mise_a_jour()
                             Taille = True
                         else:
-                            efface("Taille")
-                            rectangle(int(275*coef_largeur), int(350*coef_hauteur), int(575*coef_largeur), int(450*coef_hauteur), "white", "red", 5, tag="Taille")
-                            texte(int(425*coef_largeur), int(400*coef_hauteur), "Taille", "white", "center", taille=int(32*coef_hauteur), tag="Taille" )
-                            mise_a_jour()
                             Taille = False
                     elif int(625*coef_largeur) <= x <= int(925*coef_largeur) and int(350*coef_hauteur) <= y <= int(450*coef_hauteur):
                         if not Dynamique:
-                            efface("Dynamique")
-                            rectangle(int(625*coef_largeur), int(350*coef_hauteur) ,int(925*coef_largeur), int(450*coef_hauteur), "white", "green", 5, tag="Dynamique")
-                            texte(int(775*coef_largeur), int(400*coef_hauteur), "Dynamique", "white", "center", taille=int(32*coef_hauteur), tag="Dynamique" )
-                            mise_a_jour()
                             Dynamique = True
                         else:
-                            efface("Dynamique")
-                            rectangle(int(625*coef_largeur), int(350*coef_hauteur), int( 925*coef_largeur), int(450*coef_hauteur), "white", "red", 5, tag="Dynamique")
-                            texte(int(775*coef_largeur), int(400*coef_hauteur), "Dynamique", "white", "center", taille=int(32*coef_hauteur), tag="Dynamique" )
-                            mise_a_jour()
                             Dynamique = False
                     elif int(275*coef_largeur) <= x <= int(575*coef_largeur) and int(500*coef_hauteur) <= y <= int(600*coef_hauteur):
-                        if Terminaison == False :
-                            efface("Terminaison")
-                            rectangle(int(275*coef_largeur), int(500*coef_hauteur), int(575*coef_largeur), int(600*coef_hauteur), "white", "green", 5, tag="Terminaison")
-                            texte(int(425*coef_largeur), int(550*coef_hauteur), "Terminaison", "white", "center", taille=int(32*coef_hauteur), tag="Terminaison" )
-                            mise_a_jour()
+                        if not Terminaison:
                             Terminaison = True
                         else:
-                            efface("Terminaison")
-                            rectangle(int(275*coef_largeur), int(500*coef_hauteur), int(575*coef_largeur), int(600*coef_hauteur), "white", "red", 5, tag="Terminaison")
-                            texte(int(425*coef_largeur), int(550*coef_hauteur), "Terminaison", "white", "center", taille=int(32*coef_hauteur), tag="Terminaison" )
-                            mise_a_jour()
                             Terminaison = False
                     elif int(625*coef_largeur) <= x <= int(925*coef_largeur) and int(500*coef_hauteur) <= y <= int(600*coef_hauteur):
                         if not Obstacle:
-                            efface("Obstacle")
-                            rectangle(int(625*coef_largeur), int(500*coef_hauteur), int( 925*coef_largeur), int(600*coef_hauteur), "white", "green", 5, tag="Obstacle")
-                            texte(int(775*coef_largeur), int(550*coef_hauteur), "Obstacle", "white", "center", taille=int(32*coef_hauteur), tag="Obstacle" )
-                            mise_a_jour()
                             Obstacle = True
                         else:
-                            efface("Obstacle")
-                            rectangle(int(625*coef_largeur), int(500*coef_hauteur), int(925*coef_largeur), int(600*coef_hauteur), "white", "red", 5, tag="Obstacle")
-                            texte(int(775*coef_largeur), int(550*coef_hauteur), "Obstacle", "white", "center", taille=int(32*coef_hauteur), tag="Obstacle" )
-                            mise_a_jour()
                             Obstacle = False
                     elif int(1130*coef_largeur) <=x<= int(1230*coef_largeur) and int(680*coef_hauteur) <=y<=int(715*coef_hauteur):
                         efface("Variante")
@@ -351,6 +301,7 @@ def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle
                         fond_menu()
                         mise_a_jour()
                         break
+                    variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle)
             elif int(500*coef_hauteur) <= y <= int(600*coef_hauteur):
                 Quitter = True
                 break
@@ -424,7 +375,7 @@ def calcul_score(liste_cercle):
         return None
     return ensemble
 
-def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tour, couleurJoueur):
+def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tour):
     """
     Permet la division des cercles lorsque un joueur clique sur le cercle adverse.
     x, y (float/int) : cordonnées x et y du clic du joueur dans le terrain de jeu
@@ -470,7 +421,7 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
         liste_cercle_violet.pop(liste_cercle_violet.index(element))
     efface(element[3])
 
-def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
+def cerkle(x, y, tour, liste_cercle_vert, liste_cercle_violet, rayon):
     """
     Cette fonction permet d'afficher les cercles et les intègre dans une liste pour garder les différentes informations tel que :
     x, y : cordonnées x et if 50<=x<100:
@@ -484,8 +435,8 @@ def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
                 y=620, id_cercle]
     rayon : indique le rayon du cercle prochainement généré
     """
-    id_cercle = cercle(x, y, rayon, "black", couleur, 1, tag="Jeu")
-    if couleur == "mediumseagreen":
+    id_cercle = cercle(x, y, rayon, "black", couleurJoueur[tour], 1, tag="Jeu")
+    if tour == 0:
         liste_cercle_vert.append([x, y, rayon, id_cercle])
     else:
         liste_cercle_violet.append([x, y, rayon, id_cercle])
@@ -493,29 +444,27 @@ def cerkle(x, y, couleur, liste_cercle_vert, liste_cercle_violet, rayon):
 def main():
     cree_fenetre(largeur_fenetre, hauteur_fenetre)
     rectangle(-1,-1, largeur_fenetre, hauteur_fenetre,"darkcyan","darkcyan")
+    Sablier = False
+    Scores = False
+    Terminaison = False
+    Taille = False
+    Dynamique = False
+    Obstacle = False
+    Quitter = False
+    Retour = False
     while True:
         fond_menu()
-        Sablier = False
-        Scores = False
-        Terminaison = False
-        Taille = False
-        Dynamique = False
-        Obstacle = False
-        Quitter = False
-        Retour = False
-        
         Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter = detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter)
 
         if Quitter == False:
             # Variables
-            listeJoueur = ["Joueur Vert","Joueur Violet"]
-            couleurJoueur = ["mediumseagreen", "mediumpurple"]
+            listeJoueur = ["Joueur 1","Joueur 2"]
             liste_cercle_violet = []
             liste_cercle_vert = []
             liste_obstacle = []
             tour, numero_tour = 0, 1
             rayon = int(50*coef_largeur)
-            nb_max_tour = 10
+            nb_max_tour = int(config[7][-1])
             score=[0, 0]
             inter = 0
             alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
@@ -668,7 +617,7 @@ def main():
                         if sqrt(distance) < alterner_liste_joueur[i][2] + rayon and sqrt(distance) > alterner_liste_joueur[i][2]:
                             intersection_cercle += 1
                         elif sqrt(distance) < alterner_liste_joueur[i][2]:
-                            scinder(x, y, alterner_liste_joueur, liste_cercle_vert, element, distance, tour, couleurJoueur)
+                            scinder(x, y, alterner_liste_joueur, liste_cercle_vert, element, distance, tour)
                             intersection_cercle += 1
                     
                     if Obstacle and detecter_intersection(x, y, rayon, liste_obstacle) == True:
@@ -677,7 +626,7 @@ def main():
                     alterner_liste_joueur, b = b, alterner_liste_joueur
 
                     if intersection_cercle == 0 and rayon != 0:
-                        cerkle(x, y, couleurJoueur[tour], liste_cercle_vert, liste_cercle_violet, rayon)
+                        cerkle(x, y, tour, liste_cercle_vert, liste_cercle_violet, rayon)
 
                         detection_cercle_inscrit(alterner_liste_joueur)
 
@@ -690,10 +639,10 @@ def main():
                     score[1] = len(calcul_score(liste_cercle_violet))
                     if numero_tour == nb_max_tour+1 and tour == 1:
                         if score[0] > score[1]:
-                            texte(int(640*coef_largeur), int(50*coef_hauteur),"Le Joueur Vert gagne", "white", "center",  taille=int(24*coef_hauteur), tag="Jeu")
+                            texte(int(640*coef_largeur), int(50*coef_hauteur),"Le Joueur 1 gagne", "white", "center",  taille=int(24*coef_hauteur), tag="Jeu")
                             x, y, z = attente_clic()
                         elif score[1] > score[0]:
-                            texte(int(640*coef_largeur), int(50*coef_hauteur), "Le Joueur Violet gagne", "white", "center",  taille=int(24*coef_hauteur), tag="Jeu")
+                            texte(int(640*coef_largeur), int(50*coef_hauteur), "Le Joueur 2 gagne", "white", "center",  taille=int(24*coef_hauteur), tag="Jeu")
                             x, y, z = attente_clic()
                         else:
                             texte(int(640*coef_largeur), int(50*coef_hauteur), "Egalité", "white", "center", taille=int(24*coef_hauteur), tag="Jeu")
