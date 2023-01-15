@@ -18,3 +18,7 @@ Malgré les problèmes concernants l'adaptation du jeu en fonction de la taille 
 
 Problèmes majeurs rencontré : 
 Nous avons tenté de réaliser les deux bonus Billard et Pause/Sauvegarde, cependant lors de la réalisation de ceux-ci, nous avons remarqué que la structure de notre prograrmme n'étais pas réellement adapté a ces bonus, plus particulièrement Pause/Sauvegarde, de plus, nous avons eu eu du mal a gérer toutes les informations nécessaire à une sauvegarde, certaiesn ambiguité et conflit entre plusieurs parties du programme posait problème pour tout le reste. Pour le cas du bonus Billard, nous n'avons pas réussi à bien comprendre les différentes subtilité, tel que la collision entre deux boules, car effectivement, nous avons trouver qu'il y a un certain sens dans leur collision grâce à la tangente, cependant, dans le billard que tout le monde connait, lorqsu'il y a collision entre deux boules, l'une bouge et non l'autre, or dans notre cas les boules bougent sans arrêt.
+
+- Baffioni Adrien
+- Cherak Rabah
+Université Gustave Eiffel - Projet Python Bataille de Boule
