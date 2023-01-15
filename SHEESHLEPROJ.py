@@ -257,6 +257,9 @@ def variante_terminaison(numero_tour):
     return nb_max_tour
 
 def creer_obstacles():
+    """
+    Cette fonction permet de créer la liste des différents obstacle, chaque élement de la liste correspond aux informations d'un obstacle
+    """
     for element in liste_obstacles:
         x, y, r, couleur = element
         x = x/100*(1230-50)+50
@@ -328,6 +331,10 @@ def variante_dynamique(liste_cercle_un, liste_cercle_deux, couleur, Obstacle, li
 ######################## Fonctions de detection ##################################################################################
 
 def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter):
+    """
+    Detection du clique de l'utilisateur sur les différents boutons du menu principal et du menu des variants.
+    Permet aussi de détecter les transitions entre les différents menu.
+    """
     while True:
         x, y, z = attente_clic()
         if int(200*coef_largeur) <= x <= int(600*coef_largeur):
@@ -404,6 +411,9 @@ def clic_hors_bordure(x, y):
     return x, y
 
 def clic_hors_retour(x,y):
+    """ 
+    Redemande au joueur de cliquer dans la zone de retour lorsque les coordonnées 'x' et 'y' ne sont pas respectées.
+    """
     while x > int(1230*coef_largeur) or x < int(1130*coef_largeur) or y < int(680*coef_hauteur) or y >int(715*coef_hauteur):
         x, y, m = attente_clic()
     return x, y
@@ -440,6 +450,10 @@ def detection_cercle_inscrit(alterner_liste_joueur):
 ######################## Fonctions agissant directement sur le terrain de jeu ####################################################
 
 def bonus_classement(score):
+        """
+        Cette fonction permet de demander a l'utilisateur d'entrer un nom pour qu'il soit afficher dans le tableau du classement
+        le paramètre score est nécessaire pour indiquer le score de l'utilisateur
+        """
     text = []
     while True:
         ev = donne_evenement()
@@ -477,6 +491,10 @@ def calcul_extremite_cercle(cercle, r):
     return liste
 
 def calcul_score(liste_cercle):
+    """
+    Cette fonction permet de calculer l'air de tout les cercles d'un joueur présent sur le terrain
+    le paramètre liste_cercle permet de récuperer les informations des différents cercle
+    """
     ensemble = set()
     for element in liste_cercle:
         for x in range(element[0]-element[2], element[0]+element[2]+1):
@@ -535,17 +553,11 @@ def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tou
     efface(element[3])
 
 def cerkle(x, y, tour, liste_cercle_vert, liste_cercle_violet, rayon):
-    """
+    """"
     Cette fonction permet d'afficher les cercles et les intègre dans une liste pour garder les différentes informations tel que :
-    x, y : cordonnées x et if 50<=x<100:
-                x=100
-            elif 1180<x<=1230:
-                x=1180
-                
-            if 100<=y<150:
-                y=150
-            elif 620<y<=670:
-                y=620, id_cercle]
+    x, y : cordonnées x et y du dernier cercle posé
+    tour : récuperer l'information du tour du joueur pour différencier le joueur 1 et le joueur 2
+    liste_cercle_un / liste_cercle_deux : permet de récupérer les informations des cercles des deux joueurs
     rayon : indique le rayon du cercle prochainement généré
     """
     id_cercle = cercle(x, y, rayon, "black", couleurJoueur[tour], 1, tag="Jeu")
