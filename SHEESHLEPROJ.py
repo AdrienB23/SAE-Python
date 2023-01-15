@@ -577,15 +577,15 @@ def main():
 
         if not Quitter:
             # Variables
-            liste_cercle_violet = []
-            liste_cercle_vert = []
+            liste_cercle_2 = []
+            liste_cercle_1 = []
             liste_obstacle = []
             tour, numero_tour = 0, 1
             rayon = int(config[0][-1])
             nb_max_tour = int(config[3][-1].strip())
             score=[0, 0]
             inter = 0
-            alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
+            alterner_liste_joueur, b = liste_cercle_2, liste_cercle_1
             detection_terminaison = 0
             detection_obstacle = 0
             # Variante taille de boule
@@ -594,9 +594,9 @@ def main():
                 dizaine = 0
                 unite = 0
                 fond_taille()
-                epargne_vert = int(config[4][-1])
-                epargne_violet = int(config[4][-1])
-                epargne_joueurs(epargne_vert, epargne_violet)
+                epargne_1 = int(config[4][-1])
+                epargne_2 = int(config[4][-1])
+                epargne_joueurs(epargne_1, epargne_2)
             while Retour == False:
                 if numero_tour < nb_max_tour+1:
                     x = None
@@ -697,18 +697,18 @@ def main():
                             continue
                         elif int(50*coef_largeur) <= x <= int(1230*coef_hauteur) and int(100*coef_hauteur) <= y <= int(670*coef_hauteur):
                             if tour == 0:
-                                if epargne_vert - depense < 0:
+                                if epargne_1 - depense < 0:
                                     continue
                                 else:
-                                    epargne_vert -= depense
+                                    epargne_1 -= depense
                                     rayon = depense
                             else:
-                                if epargne_violet - depense < 0:
+                                if epargne_2 - depense < 0:
                                     continue
                                 else:
-                                    epargne_violet -= depense
+                                    epargne_2 -= depense
                                     rayon = depense
-                            epargne_joueurs(epargne_vert, epargne_violet)
+                            epargne_joueurs(epargne_1, epargne_2)
 
                     x, y = clic_hors_bordure(x, y)
                     if int(1130*coef_largeur) <= x <= int(1230*coef_largeur) and int(680*coef_hauteur) <= y <= int(715*coef_hauteur):
@@ -733,7 +733,7 @@ def main():
                         if sqrt(distance) < alterner_liste_joueur[i][2] + rayon and sqrt(distance) > alterner_liste_joueur[i][2]:
                             intersection_cercle += 1
                         elif sqrt(distance) < alterner_liste_joueur[i][2]:
-                            scinder(x, y, alterner_liste_joueur, liste_cercle_vert, element, distance, tour)
+                            scinder(x, y, alterner_liste_joueur, liste_cercle_1, element, distance, tour)
                             intersection_cercle += 1
                     
                     if Obstacle and detecter_intersection(x, y, rayon, liste_obstacle) == True:
@@ -742,12 +742,12 @@ def main():
                     alterner_liste_joueur, b = b, alterner_liste_joueur
 
                     if intersection_cercle == 0 and rayon != 0:
-                        cerkle(x, y, tour, liste_cercle_vert, liste_cercle_violet, rayon)
+                        cerkle(x, y, tour, liste_cercle_1, liste_cercle_2, rayon)
 
                         detection_cercle_inscrit(alterner_liste_joueur)
                     
-                    score[0] = len(calcul_score(liste_cercle_vert))
-                    score[1] = len(calcul_score(liste_cercle_violet))
+                    score[0] = len(calcul_score(liste_cercle_1))
+                    score[1] = len(calcul_score(liste_cercle_2))
                     if numero_tour == nb_max_tour and tour == 1:
                         if score[0] > score[1]:
                             texte(int(500*coef_largeur), int(50*coef_hauteur),"Le Joueur", "white", "w",  taille=int(24*coef_hauteur), tag="Jeu")
