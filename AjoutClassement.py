@@ -2,23 +2,16 @@ from upemtk import *
 from random import *
 from time import *
 from math import *
-import os
-import json
+import string
 
-liste_cercle_1 = []
-liste_cercle_2 = []
+with open("config.txt") as fichier_1:
+    config = fichier_1.read().splitlines()
+    config = [x.split(":") for x in config]
 
-fichier = "config.txt"
-fi = open(fichier)
-config = []
-for lignes in fi:
-    if lignes[len(lignes)-1] == "\n":
-        config.append(lignes[:-1])
-    else:
-        config.append(lignes)
-fi.close()     
-for i in range(len(config)):
-    config[i] = config[i].split(":")
+largeur_fenetre = int(config[0][-1])
+hauteur_fenetre = int(config[1][-1])
+coef_largeur = largeur_fenetre/1280
+coef_hauteur = hauteur_fenetre/720
 
 largeur_fenetre = int(config[0][-1])
 hauteur_fenetre = int(config[1][-1])
@@ -26,27 +19,7 @@ coef_largeur = largeur_fenetre/1280
 coef_hauteur = hauteur_fenetre/720
 
 couleurJoueur = [config[3][-1].strip(), config[4][-1].strip()]
-
-epargne_1 = int(config[6][-1])
-epargne_2 = int(config[6][-1])
-
-liste_variables = ["liste_cercle_1", "liste_cercle_2", "tour", "numero_tour", "nb_max_tour", "epargne_1", "epargne_2"]
-
 ######################## Fonction d'aspect graphique des différents affichages ###################################################
-
-def fond_sauvegarde():
-    rectangle(int(2*coef_largeur), int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Sauvegarde")
-    texte(int(640*coef_largeur), int(75*coef_hauteur), "Choisissez une sauvegarde", "white", "center", taille=int(50*coef_hauteur), tag="Sauvegarde")
-
-    rectangle(int(440*coef_largeur), int(200*coef_hauteur), int(840*coef_largeur), int(300*coef_hauteur), "white", "#009382", 5, tag="Sauvegarde")
-    texte(int(640*coef_largeur), int(250*coef_hauteur), "Sauvegarde 1", "white", "center", taille=int(40*coef_hauteur), tag="Sauvegarde")
-
-    rectangle(int(440*coef_largeur), int(350*coef_hauteur), int(840*coef_largeur), int(450*coef_hauteur), "white", "#009382", 5, tag="Sauvegarde")
-    texte(int(640*coef_largeur), int(400*coef_hauteur), "Sauvegarde 2", "white", "center", taille=int(40*coef_hauteur), tag="Sauvegarde")
-
-    rectangle(int(440*coef_largeur), int(500*coef_hauteur),int(840*coef_largeur), int(600*coef_hauteur), "white", "#009382", 5, tag="Sauvegarde")
-    texte(int(640*coef_largeur),int(550*coef_hauteur),"Sauvegarde 3", "white", "center", taille=int(40*coef_hauteur), tag="Sauvegarde")
-    mise_a_jour()
 
 def fond_menu(): # Affiche le menu du jeu
     rectangle(int(2*coef_largeur), int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Menu")
@@ -63,6 +36,9 @@ def fond_menu(): # Affiche le menu du jeu
 
     rectangle(int(650*coef_largeur), int(450*coef_hauteur),int(1050*coef_largeur), int(550*coef_hauteur), "white", "#009382", 5, tag="Menu")
     texte(int(850*coef_largeur),int(500*coef_hauteur),"Quitter", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
+
+    rectangle(int(575*coef_largeur), int(600*coef_hauteur), int(675*coef_largeur), int(700*coef_hauteur), "white", "#009382", 5, tag="Menu")
+    image(625, 650, "trophy.png", "center", tag="Menu")
     mise_a_jour()
 
 def fond_jeu(): # Affiche les éléments du terrains de jeu
@@ -70,6 +46,27 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
 
     rectangle(int(1130*coef_largeur), int(680*coef_hauteur), int(1230*coef_largeur), int(715*coef_hauteur), "black","red", 1, "Retour Jeu")
     texte(int(1180*coef_largeur), int(698*coef_hauteur), "Retour", "white", "c", taille=int(16*coef_hauteur), tag="Retour Jeu")
+    mise_a_jour()
+
+def fond_classement():
+    rectangle(int(2*coef_largeur), int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Classement")
+    texte(int(640*coef_largeur), int(75*coef_hauteur), "Classement", "white", "center", taille=int(50*coef_hauteur), tag="Classement")
+
+    rectangle(int(1130*coef_largeur), int(680*coef_hauteur),int( 1230*coef_largeur), int(715*coef_hauteur), "black","red", 1, "Classement")
+    texte(int(1143*coef_largeur), int(685*coef_hauteur), "Retour", "white", "nw", taille=int(16*coef_hauteur), tag="Classement")
+    
+    with open("classement.txt") as fichier:
+        classement = fichier.read().splitlines()
+        classement = [x.split(":") for x in classement]
+        classement = [[x[0].strip(), int(x[1].strip())] for x in classement]
+        classement.sort(key=lambda x:x[0])
+        classement.sort(key=lambda x:x[1], reverse=True)
+        classement = classement[:10]
+    with open("classement.txt", "w") as fichier:
+        for x in classement:
+            fichier.write(x[0] + " : " + str(x[1]) + "\n")
+    texte(640, 400,"\n".join([x[0] + " : " + str(x[1]) for x in classement]), ancrage="center",couleur="white", police="Arial", tag="Classement")
+
     mise_a_jour()
 
 def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
@@ -163,14 +160,14 @@ def fond_taille():
     texte(int(503*coef_largeur), int(695*coef_hauteur), "0", "black", "center", taille=int(24*coef_hauteur), tag="unite Jeu")
     mise_a_jour()
 
-def epargne_joueurs(epargne_1, epargne_2):
+def epargne_joueurs(epargne_Vert, epargne_Violet):
     efface("epargne")
     texte(int(600*coef_largeur), int(695*coef_hauteur), "Montant", "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
     cercle(int(725*coef_largeur), int(695*coef_hauteur), int(20*coef_hauteur), "black", couleurJoueur[0], tag="epargne Jeu")
-    texte(int(745*coef_largeur), int(695*coef_hauteur), " :" + str(epargne_1), "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
+    texte(int(745*coef_largeur), int(695*coef_hauteur), " :" + str(epargne_Vert), "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
     texte(int(850*coef_largeur), int(695*coef_hauteur), "Montant", "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
     cercle(int(975*coef_largeur), int(695*coef_hauteur), int(20*coef_hauteur), "black", couleurJoueur[1], tag="epargne Jeu")
-    texte(int(995*coef_largeur), int(695*coef_hauteur), " : " + str(epargne_2), "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
+    texte(int(995*coef_largeur), int(695*coef_hauteur), " : " + str(epargne_Violet), "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
     mise_a_jour()
 
 def variante_score(score, t_sablier):
@@ -274,57 +271,9 @@ def variante_dynamique(liste_cercle_un, liste_cercle_deux, couleur, Obstacle, li
                 liste_cercle_un[i] = [x, y, r, id_cercle]
     return liste_cercle_un
 
-######################## Fonctions de sauvegarde ##################################################################################
-
-def detection_sauvegarde():
-    while True:
-        x, y, z = attente_clic()
-        if int(490*coef_largeur) <= x <= int(790*coef_largeur) :
-            if int(200*coef_hauteur) <= y <= int(300*coef_hauteur):
-                Sauvegarde = 1
-                break
-            elif int(350*coef_hauteur) <= y <= int(450*coef_hauteur):
-                Sauvegarde = 2
-                break
-            elif int(500*coef_hauteur) <= y <= int(600*coef_hauteur):
-                Sauvegarde = 3
-                break
-    return Sauvegarde
-
-def creation_sauvegarde(num, nb_max_tour):
-    ligne = []
-    liste_valeurs = [[], [], 0, 1, nb_max_tour, epargne_1, epargne_2]
-    fichier = open(os.sep.join(["Fichiers", "Sauvegarde"]) + str(num) + ".txt", "w")
-    for i in range(len(liste_variables)):
-        ligne.append(liste_variables[i] + " : " + str(liste_valeurs[i]) + "\n")
-    fichier.writelines(ligne)
-    fichier.close()
-
-def chargement(num):
-    fichier = open(os.sep.join(["Fichiers", "Sauvegarde"]) + str(num) + ".txt", "r")
-    sauvegardes = []
-    for lignes in fichier:
-        if lignes[len(lignes)-1] == "\n":
-            sauvegardes.append(lignes[:-1])
-        else:
-            sauvegardes.append(lignes)
-    fichier.close()
-    for i in range(len(sauvegardes)):
-        sauvegardes[i] = sauvegardes[i].split(":")
-    variables = []
-    for i in range(len(sauvegardes)):
-            variables.append(json.loads(sauvegardes[i][-1].strip()))
-    return variables
-
-def maj_sauvegarde(num_sauv, liste_valeurs):
-    fichier = open(os.sep.join(["Fichiers", "Sauvegarde"]) + str(num_sauv) + ".txt", "w")
-    for i in range(len(liste_variables)):
-        fichier.write(liste_variables[i] + " : " + str(liste_valeurs[i]) + "\n")
-    fichier.close()
-
 ######################## Fonctions de detection ##################################################################################
 
-def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter, Sauvegarde):
+def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter):
     while True:
         x, y, z = attente_clic()
         if int(200*coef_largeur) <= x <= int(600*coef_largeur) :
@@ -376,13 +325,16 @@ def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle
             if int(450*coef_hauteur) <= y <= int(550*coef_hauteur):
                 Quitter = True
                 break
-            elif int(300*coef_hauteur) <= y <= int(400*coef_hauteur):
-                efface("Menu")
-                fond_sauvegarde()
-                Sauvegarde = detection_sauvegarde()
-                efface("Sauvegarde")
-                fond_menu()
-    return Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter, Sauvegarde
+        if int(575*coef_largeur) <= x <= int(675*coef_largeur) and int(600*coef_hauteur) <= y <= int(700*coef_hauteur):
+            efface("Menu")
+            fond_classement()
+            while True:
+                x, y, z = attente_clic()
+                if int(1130*coef_largeur) <=x<= int(1230*coef_largeur) and int(680*coef_hauteur) <=y<=int(715*coef_hauteur):
+                    efface("Classement")
+                    fond_menu()
+                    break
+    return Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter
 
 def clic_hors_bordure(x, y):
     """ 
@@ -432,6 +384,36 @@ def detection_cercle_inscrit(alterner_liste_joueur):
 
 ######################## Fonctions agissant directement sur le terrain de jeu ####################################################
 
+def bonus_classement(score):
+    text = []
+    while True:
+        ev = donne_evenement()
+        type_ev = type_evenement(ev)
+
+        efface("class")
+
+        rectangle(465, 260, 815, 410, "white", "white", tag="class")
+        texte(640, 300, "Entrer votre nom", ancrage="center", police="Arial", tag="class")
+        texte(640, 360,"".join(text), ancrage="center", police="Arial", tag="class")
+        rectangle(490, 335, 790, 385, tag="class")
+
+        if type_ev == "Touche":
+            for caractere in string.printable:
+                if touche(ev) == caractere and len(text)<16:
+                    text.append(caractere)
+            if touche(ev) == "space":
+                text.append(" ")
+            if touche(ev) == "BackSpace" and text:
+                text.pop(-1)
+            if touche(ev) == "Return" and text:
+                with open("classement.txt", "a") as fichier:
+                    fichier.write("".join(text) + " : " + str(score) + "\n")
+                efface("class")
+                text = []
+                break
+
+        mise_a_jour()
+
 def calcul_extremite_cercle(cercle, r):
     """
     Cette fonction permet de créer une liste avec les cordonnée des quatres extrémité d'un cercle
@@ -451,12 +433,12 @@ def calcul_score(liste_cercle):
         return None
     return ensemble
 
-def scinder(x, y, liste_cercle_2, liste_cercle_1, element, distance, tour):
+def scinder(x, y, liste_cercle_violet, liste_cercle_vert, element, distance, tour):
     """
     Permet la division des cercles lorsque un joueur clique sur le cercle adverse.
     x, y (float/int) : cordonnées x et y du clic du joueur dans le terrain de jeu
-    liste_cercle_2 (list) : liste contenant les informations sur les différents cercle du joueur vert sur le terrain
-    liste_cercle_1 (list) : liste contenant les informations sur les différents cercle du joueur violet sur le terrain
+    liste_cercle_vert (list) : liste contenant les informations sur les différents cercle du joueur vert sur le terrain
+    liste_cercle_violet (list) : liste contenant les informations sur les différents cercle du joueur violet sur le terrain
     element (list) : indique sur quel cercle la fonction est en train d'agir (l'element est une liste constitué d'information sur le cercle)
     distance (float/int) : indique le distance entre le clic du joueur et le centre du cercle adverse déjà présent sur le terrain
     tour (int) : indique le tour du joueur si le clic se fait par le joueur a sur un cercle du joueur b ou vice versa
@@ -488,61 +470,67 @@ def scinder(x, y, liste_cercle_2, liste_cercle_1, element, distance, tour):
     tag1 = cercle(x, y, rayon1, "black", couleurJoueur[tour], 1, tag="Jeu")
     tag2 = cercle(x2, y2, rayon2, "black", couleurJoueur[tour], 1, tag="Jeu")
     if tour == 0:
-        liste_cercle_2.append([x, y, rayon1, tag1])
-        liste_cercle_2.append([x2, y2, rayon2, tag2])
-        liste_cercle_2.pop(liste_cercle_2.index(element))
+        liste_cercle_vert.append([x, y, rayon1, tag1])
+        liste_cercle_vert.append([x2, y2, rayon2, tag2])
+        liste_cercle_vert.pop(liste_cercle_vert.index(element))
     else:
-        liste_cercle_1.append([x2, y2, rayon2, tag2])  
-        liste_cercle_1.append([x, y, rayon1, tag1])
-        liste_cercle_1.pop(liste_cercle_1.index(element))
+        liste_cercle_violet.append([x2, y2, rayon2, tag2])  
+        liste_cercle_violet.append([x, y, rayon1, tag1])
+        liste_cercle_violet.pop(liste_cercle_violet.index(element))
     efface(element[3])
 
-def cerkle(x, y, tour, liste_cercle_2, liste_cercle_1, rayon):
+def cerkle(x, y, tour, liste_cercle_vert, liste_cercle_violet, rayon):
     """
     Cette fonction permet d'afficher les cercles et les intègre dans une liste pour garder les différentes informations tel que :
-    x, y : cordonnées x et y du centre du cercle
+    x, y : cordonnées x et if 50<=x<100:
+                x=100
+            elif 1180<x<=1230:
+                x=1180
+                
+            if 100<=y<150:
+                y=150
+            elif 620<y<=670:
+                y=620, id_cercle]
     rayon : indique le rayon du cercle prochainement généré
     """
     id_cercle = cercle(x, y, rayon, "black", couleurJoueur[tour], 1, tag="Jeu")
     if tour == 0:
-        liste_cercle_2.append([x, y, rayon, id_cercle])
+        liste_cercle_vert.append([x, y, rayon, id_cercle])
     else:
-        liste_cercle_1.append([x, y, rayon, id_cercle])
+        liste_cercle_violet.append([x, y, rayon, id_cercle])
 
 def main():
     cree_fenetre(largeur_fenetre, hauteur_fenetre)
     rectangle(-1,-1, largeur_fenetre, hauteur_fenetre,"darkcyan","darkcyan")
     Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter = [False]*7
-    fond_sauvegarde()
-    Sauvegarde = detection_sauvegarde()
-    efface("Sauvegarde")
-    if not os.path.exists(os.sep.join(["Fichiers", "Sauvegarde" + str(Sauvegarde) + ".txt"])):
-        nb_max_tour = int(config[5][-1].strip())
-        creation_sauvegarde(Sauvegarde, nb_max_tour)
     while True:
         Retour = False
         fond_menu()
-        Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter, Sauvegarde = detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter, Sauvegarde)
-        if not os.path.exists(os.sep.join(["Fichiers", "Sauvegarde" + str(Sauvegarde) + ".txt"])):
-            nb_max_tour = int(config[5][-1].strip())
-            creation_sauvegarde(Sauvegarde, nb_max_tour)
+        Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter = detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter)
+
         if not Quitter:
             # Variables
-            liste_cercle_1_temp, liste_cercle_2_temp, tour, numero_tour, nb_max_tour, epargne_1, epargne_2 = chargement(Sauvegarde)
+            liste_cercle_violet = []
+            liste_cercle_vert = []
             liste_obstacle = []
+            tour, numero_tour = 0, 1
             rayon = int(config[2][-1])
+            nb_max_tour = int(config[5][-1].strip())
             score=[0, 0]
-            alterner_liste_joueur, b = liste_cercle_1, liste_cercle_2
+            inter = 0
+            alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
             detection_terminaison = 0
             detection_obstacle = 0
             # Variante taille de boule
             if Taille:
                 centaine = 0
                 dizaine = 0
-                unite = 0 
+                unite = 0
                 fond_taille()
-                epargne_joueurs(epargne_1, epargne_2)
-            while not Retour:
+                epargne_vert = int(config[6][-1])
+                epargne_violet = int(config[6][-1])
+                epargne_joueurs(epargne_vert, epargne_violet)
+            while Retour == False:
                 if numero_tour < nb_max_tour+1:
                     x = None
                     detection_tour(tour, numero_tour, nb_max_tour)
@@ -564,12 +552,12 @@ def main():
                                     continue
                                 break
                             elif type_ev == "Touche":
-                                if Scores and touche(ev) == config[9][-1].strip():
+                                if Scores and touche(ev) == 's':
                                     x, y, t = variante_score(score, t)
                                     if x != None:
                                         break
                                     continue
-                                if Terminaison and detection_terminaison == 0 and touche(ev) == config[8][-1].strip():
+                                if Terminaison and detection_terminaison == 0 and touche(ev) == 't':
                                     nb_max_tour = variante_terminaison(numero_tour)
                                     detection_terminaison += 1
                                     if x != None:
@@ -594,11 +582,11 @@ def main():
                         if type_ev == 'ClicGauche':
                             x, y = clic_x(ev), clic_y(ev)
                         elif type_ev == 'Touche':
-                            if touche(ev) == config[9][-1].strip():
+                            if touche(ev) == 's':
                                 x, y = variante_score(score, None) 
                                 if x == None:
                                     continue
-                            elif Terminaison and detection_terminaison == 0 and touche(ev) == config[8][-1].strip():
+                            elif Terminaison and detection_terminaison == 0 and touche(ev) == 't':
                                 nb_max_tour = variante_terminaison(numero_tour)
                                 detection_terminaison += 1
                                 if x != None:
@@ -623,7 +611,7 @@ def main():
                         if type_ev == 'ClicGauche':
                             x, y = clic_x(ev), clic_y(ev)
                         elif type_ev == 'Touche':
-                            if touche(ev) == config[8][-1].strip():
+                            if touche(ev) == 't':
                                 nb_max_tour = variante_terminaison(numero_tour)
                                 detection_terminaison += 1
                             else:
@@ -642,18 +630,18 @@ def main():
                             continue
                         elif int(50*coef_largeur) <= x <= int(1230*coef_hauteur) and int(100*coef_hauteur) <= y <= int(670*coef_hauteur):
                             if tour == 0:
-                                if epargne_1 - depense < 0:
+                                if epargne_vert - depense < 0:
                                     continue
                                 else:
-                                    epargne_1 -= depense
+                                    epargne_vert -= depense
                                     rayon = depense
                             else:
-                                if epargne_2 - depense < 0:
+                                if epargne_violet - depense < 0:
                                     continue
                                 else:
-                                    epargne_2 -= depense
+                                    epargne_violet -= depense
                                     rayon = depense
-                            epargne_joueurs(epargne_1, epargne_2)
+                            epargne_joueurs(epargne_vert, epargne_violet)
 
                     x, y = clic_hors_bordure(x, y)
                     if int(1130*coef_largeur) <= x <= int(1230*coef_largeur) and int(680*coef_hauteur) <= y <= int(715*coef_hauteur):
@@ -681,10 +669,8 @@ def main():
                         if sqrt(distance) < alterner_liste_joueur[i][2] + rayon and sqrt(distance) > alterner_liste_joueur[i][2]:
                             intersection_cercle += 1
                         elif sqrt(distance) < alterner_liste_joueur[i][2]:
-                            scinder(x, y, alterner_liste_joueur, liste_cercle_1, element, distance, tour)
+                            scinder(x, y, alterner_liste_joueur, liste_cercle_vert, element, distance, tour)
                             intersection_cercle += 1
-                    print(liste_cercle_1)
-                    print(liste_cercle_2)
                     
                     if Obstacle and detecter_intersection(x, y, rayon, liste_obstacle) == True:
                         intersection_cercle += 1
@@ -692,47 +678,47 @@ def main():
                     alterner_liste_joueur, b = b, alterner_liste_joueur
 
                     if intersection_cercle == 0 and rayon != 0:
-                        cerkle(x, y, tour, liste_cercle_2, liste_cercle_1, rayon)
+                        cerkle(x, y, tour, liste_cercle_vert, liste_cercle_violet, rayon)
 
                         detection_cercle_inscrit(alterner_liste_joueur)
 
-                    score[0] = len(calcul_score(liste_cercle_2))
-                    score[1] = len(calcul_score(liste_cercle_1))
+                        if tour == 0 and inter!= 0:
+                            intersection_vert = inter
+                        elif tour == 1 and inter!=0:
+                            intersection_violet = inter
+
+                    score[0] = len(calcul_score(liste_cercle_vert))
+                    score[1] = len(calcul_score(liste_cercle_violet))
                     if numero_tour == nb_max_tour+1 and tour == 1:
                         if score[0] > score[1]:
                             texte(int(500*coef_largeur), int(50*coef_hauteur),"Le Joueur", "white", "w",  taille=int(24*coef_hauteur), tag="Jeu")
                             cercle(int(670*coef_largeur), int(50*coef_hauteur), int(20*coef_hauteur), "black", couleurJoueur[0], tag="Scores Jeu")
                             texte(int(690*coef_largeur), int(50*coef_hauteur)," gagne", "white", "w",  taille=int(24*coef_hauteur), tag="Jeu")
-
+                            bonus_classement(score[0])
                         elif score[1] > score[0]:
                             texte(int(500*coef_largeur), int(50*coef_hauteur),"Le Joueur", "white", "w",  taille=int(24*coef_hauteur), tag="Jeu")
                             cercle(int(670*coef_largeur), int(50*coef_hauteur), int(20*coef_hauteur), "black", couleurJoueur[1], tag="Scores Jeu")
                             texte(int(690*coef_largeur), int(50*coef_hauteur)," gagne", "white", "w",  taille=int(24*coef_hauteur), tag="Jeu")
+                            bonus_classement(score[1])
                         else:
                             texte(int(640*coef_largeur), int(50*coef_hauteur), "Egalité", "white", "center", taille=int(24*coef_hauteur), tag="Jeu")
-                       
+                            bonus_classement(score[0])
+                            bonus_classement(score[1])
+
                         x, y, z = attente_clic()
                         x, y = clic_hors_retour(x,y)
                         Retour = True
-                    
+                        
                     if Dynamique:
                         variante_dynamique(alterner_liste_joueur, b, couleurJoueur[tour], Obstacle, liste_obstacle)
                         variante_dynamique(b, alterner_liste_joueur, couleurJoueur[(tour+1)%2], Obstacle, liste_obstacle)
                                 
                     tour = (tour+1) % 2 
-                    
+
                     mise_a_jour()
             
             efface("Jeu")
             mise_a_jour()
-            if tour == 0:
-                liste_cercle_1, liste_cercle_2 == alterner_liste_joueur, b
-            else:
-                liste_cercle_1, liste_cercle_2 == b, alterner_liste_joueur
-            liste_valeurs = [liste_cercle_1, liste_cercle_2, tour, numero_tour, nb_max_tour, epargne_1, epargne_2]
-            maj_sauvegarde(Sauvegarde, liste_valeurs)
-            if numero_tour == nb_max_tour+1 and tour == 0:
-                creation_sauvegarde(Sauvegarde, nb_max_tour)
         else:
             break
             
