@@ -21,4 +21,4 @@ Nous avons tenté de réaliser les deux bonus Billard et Pause/Sauvegarde, cepen
 
 - Baffioni Adrien
 - Cherak Rabah
-Université Gustave Eiffel - Projet Python Bataille de Boule
+- Université Gustave Eiffel - Projet Python Bataille de Boule
