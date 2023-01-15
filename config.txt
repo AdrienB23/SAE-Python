@@ -1,8 +1,10 @@
 Largeur de la fenêtre : 1280
 Hauteur de la fenêtre : 720
-Taille initial des boules ( hors variante taille des boules ) : 100
+Taille initial des boules ( hors variante taille des boules ) : 40
 Couleur du Joueur 1 : #7289da
 Couleur du Joueur 2 : #1e2124
 Nombre de tour : 5
 Epargne (variante taille des boules) : 200
-Durée Sablier (variante sablier) : 20
+Durée Sablier (variante sablier) : 200
+Touche de terminaison : t
+Touche de score : s
