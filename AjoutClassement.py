@@ -3,6 +3,7 @@ from random import *
 from time import *
 from math import *
 import string
+from os import path
 
 with open("config.txt") as fichier_1:
     config = fichier_1.read().splitlines()
@@ -55,6 +56,9 @@ def fond_classement():
     rectangle(int(1130*coef_largeur), int(680*coef_hauteur),int( 1230*coef_largeur), int(715*coef_hauteur), "black","red", 1, "Classement")
     texte(int(1143*coef_largeur), int(685*coef_hauteur), "Retour", "white", "nw", taille=int(16*coef_hauteur), tag="Classement")
     
+    if not path.exists("classement.txt"):
+        open("classement.txt", "a").close()
+
     with open("classement.txt") as fichier:
         classement = fichier.read().splitlines()
         classement = [x.split(":") for x in classement]
