@@ -552,12 +552,12 @@ def main():
                                     continue
                                 break
                             elif type_ev == "Touche":
-                                if Scores and touche(ev) == 's':
+                                if Scores and touche(ev) == config[9][-1].strip():
                                     x, y, t = variante_score(score, t)
                                     if x != None:
                                         break
                                     continue
-                                if Terminaison and detection_terminaison == 0 and touche(ev) == 't':
+                                if Terminaison and detection_terminaison == 0 and touche(ev) == config[8][-1].strip():
                                     nb_max_tour = variante_terminaison(numero_tour)
                                     detection_terminaison += 1
                                     if x != None:
@@ -582,11 +582,11 @@ def main():
                         if type_ev == 'ClicGauche':
                             x, y = clic_x(ev), clic_y(ev)
                         elif type_ev == 'Touche':
-                            if touche(ev) == 's':
+                            if touche(ev) == config[9][-1].strip():
                                 x, y = variante_score(score, None) 
                                 if x == None:
                                     continue
-                            elif Terminaison and detection_terminaison == 0 and touche(ev) == 't':
+                            elif Terminaison and detection_terminaison == 0 and touche(ev) == config[8][-1].strip():
                                 nb_max_tour = variante_terminaison(numero_tour)
                                 detection_terminaison += 1
                                 if x != None:
@@ -611,7 +611,7 @@ def main():
                         if type_ev == 'ClicGauche':
                             x, y = clic_x(ev), clic_y(ev)
                         elif type_ev == 'Touche':
-                            if touche(ev) == 't':
+                            if touche(ev) == config[8][-1].strip():
                                 nb_max_tour = variante_terminaison(numero_tour)
                                 detection_terminaison += 1
                             else:
