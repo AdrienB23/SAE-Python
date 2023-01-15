@@ -31,14 +31,20 @@ def fond_menu(): # Affiche le menu du jeu
     rectangle(int(2*coef_largeur), int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Menu")
     texte(int(640*coef_largeur), int(75*coef_hauteur), "Bataille des boules", "white", "center", taille=int(50*coef_hauteur), tag="Menu")
 
-    rectangle(int(490*coef_largeur), int(200*coef_hauteur), int( 790*coef_largeur), int(300*coef_hauteur), "white", "#009382", 5, tag="Menu")
-    texte(int(640*coef_largeur), int(250*coef_hauteur), "Jouer", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
+    rectangle(int(200*coef_largeur), int(300*coef_hauteur), int(600*coef_largeur), int(400*coef_hauteur), "white", "#009382", 5, tag="Menu")
+    texte(int(400*coef_largeur), int(350*coef_hauteur), "Jouer", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
 
-    rectangle(int(490*coef_largeur), int(350*coef_hauteur), int(790*coef_largeur), int(450*coef_hauteur), "white", "#009382", 5, tag="Menu")
-    texte(int(640*coef_largeur), int(400*coef_hauteur), "Variantes", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
+    rectangle(int(650*coef_largeur), int(300*coef_hauteur), int(1050*coef_largeur), int(400*coef_hauteur), "white", "#009382", 5, tag="Menu")
+    texte(int(850*coef_largeur), int(350*coef_hauteur), "Charger Sauv.", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
 
-    rectangle(int(490*coef_largeur), int(500*coef_hauteur),int( 790*coef_largeur), int(600*coef_hauteur), "white", "#009382", 5, tag="Menu")
-    texte(int(640*coef_largeur),int(550*coef_hauteur),"Quitter", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
+    rectangle(int(200*coef_largeur), int(450*coef_hauteur), int(600*coef_largeur), int(550*coef_hauteur), "white", "#009382", 5, tag="Menu")
+    texte(int(400*coef_largeur), int(500*coef_hauteur), "Variantes", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
+
+    rectangle(int(650*coef_largeur), int(450*coef_hauteur),int(1050*coef_largeur), int(550*coef_hauteur), "white", "#009382", 5, tag="Menu")
+    texte(int(850*coef_largeur),int(500*coef_hauteur),"Quitter", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
+
+    rectangle(int(575*coef_largeur), int(600*coef_hauteur), int(675*coef_largeur), int(700*coef_hauteur), "white", "#009382", 5, tag="Menu")
+    image(625, 650, "trophy.png", "center", tag="Menu")
     mise_a_jour()
 
 def fond_jeu(): # Affiche les éléments du terrains de jeu
@@ -46,6 +52,14 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
 
     rectangle(int(1130*coef_largeur), int(680*coef_hauteur), int(1230*coef_largeur), int(715*coef_hauteur), "black","red", 1, "Retour Jeu")
     texte(int(1180*coef_largeur), int(698*coef_hauteur), "Retour", "white", "c", taille=int(16*coef_hauteur), tag="Retour Jeu")
+    mise_a_jour()
+
+def fond_classement():
+    rectangle(int(2*coef_largeur), int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Classement")
+    texte(int(640*coef_largeur), int(75*coef_hauteur), "Classement", "white", "center", taille=int(50*coef_hauteur), tag="Classement")
+
+    rectangle(int(1130*coef_largeur), int(680*coef_hauteur),int( 1230*coef_largeur), int(715*coef_hauteur), "black","red", 1, "Classement")
+    texte(int(1143*coef_largeur), int(685*coef_hauteur), "Retour", "white", "nw", taille=int(16*coef_hauteur), tag="Classement")
     mise_a_jour()
 
 def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
@@ -253,14 +267,14 @@ def variante_dynamique(liste_cercle_un, liste_cercle_deux, couleur, Obstacle, li
 ######################## Fonctions de detection ##################################################################################
 
 def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter):
-    while True:
+   while True:
         x, y, z = attente_clic()
-        if int(490*coef_largeur) <= x <= int(790*coef_largeur) :
-            if int(200*coef_hauteur) <= y <= int(300*coef_hauteur):
+        if int(200*coef_largeur) <= x <= int(600*coef_largeur) :
+            if int(300*coef_hauteur) <= y <= int(400*coef_hauteur):
                 efface("Menu")
                 fond_jeu()
                 break
-            elif int(350*coef_hauteur) <= y <= int(450*coef_hauteur):
+            elif int(450*coef_hauteur) <= y <= int(550*coef_hauteur):
                 efface("Menu")
                 variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle)
                 while True:
@@ -300,9 +314,19 @@ def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle
                         fond_menu()
                         break
                     variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle)
-            elif int(500*coef_hauteur) <= y <= int(600*coef_hauteur):
+        elif int(650*coef_largeur) <= x <= int(1050*coef_largeur):
+            if int(450*coef_hauteur) <= y <= int(550*coef_hauteur):
                 Quitter = True
                 break
+        if int(575*coef_largeur) <= x <= int(675*coef_largeur) and int(600*coef_hauteur) <= y <= int(700*coef_hauteur):
+            efface("Menu")
+            fond_classement()
+            while True:
+                x, y, z = attente_clic()
+                if int(1130*coef_largeur) <=x<= int(1230*coef_largeur) and int(680*coef_hauteur) <=y<=int(715*coef_hauteur):
+                    efface("Classement")
+                    fond_menu()
+                    break
     return Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter
 
 def clic_hors_bordure(x, y):
