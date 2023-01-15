@@ -29,7 +29,10 @@ coef_hauteur = hauteur_fenetre/720
 couleurJoueur = [config[1][-1].strip(), config[2][-1].strip()]
 ######################## Fonction d'aspect graphique des différents affichages ###################################################
 
-def fond_menu(): # Affiche le menu du jeu
+def fond_menu(): 
+    """
+    Affiche le menu du jeu.
+    """
     rectangle(int(2*coef_largeur), int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Menu")
     texte(int(640*coef_largeur), int(75*coef_hauteur), "Bataille des boules", "white", "center", taille=int(50*coef_hauteur), tag="Menu")
 
@@ -46,7 +49,10 @@ def fond_menu(): # Affiche le menu du jeu
     image(625, 650, "trophy.png", "center", tag="Menu")
     mise_a_jour()
 
-def fond_jeu(): # Affiche les éléments du terrains de jeu
+def fond_jeu(): 
+    """
+    Affiche les éléments du terrains de jeu.
+    """
     rectangle(int(50*coef_largeur), int(100*coef_hauteur), int(1230*coef_largeur), int(670*coef_hauteur), "floralwhite","floralwhite", tag="Jeu")
 
     rectangle(int(1130*coef_largeur), int(680*coef_hauteur), int(1230*coef_largeur), int(715*coef_hauteur), "black","red", 1, "Retour Jeu")
@@ -54,6 +60,9 @@ def fond_jeu(): # Affiche les éléments du terrains de jeu
     mise_a_jour()
 
 def fond_classement():
+    """
+    Affiche le menu du classement.
+    """
     rectangle(int(2*coef_largeur), int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Classement")
     texte(int(640*coef_largeur), int(75*coef_hauteur), "Classement", "white", "center", taille=int(50*coef_hauteur), tag="Classement")
 
@@ -76,7 +85,10 @@ def fond_classement():
     texte(640, 400,"\n".join([x[0] + " : " + str(x[1]) for x in classement]), ancrage="center",couleur="white", police="Arial", tag="Classement")
     mise_a_jour()
 
-def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
+def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): 
+    """
+    Affiche le menu des variantes pour choisir une ou plusieurs variantes.
+    """
     efface("Variante")
     rectangle(int(2*coef_largeur),int(2*coef_hauteur), int(1277*coef_largeur), int(150*coef_hauteur), "white", epaisseur=5, tag="Variante")
     texte(int(640*coef_largeur), int(75*coef_hauteur), "Variantes", "white", "center", taille=int(50*coef_hauteur), tag="Variante")
@@ -133,6 +145,9 @@ def fond_sablier(temps, t1):
     mise_a_jour()
 
 def fond_score(score):
+    """
+    Affiche le score lorsque l'un des joueur appuie sur la touche assignée à celle-ci.
+    """
     texte(int(250*coef_largeur), int(50*coef_hauteur), "Score du Joueur", "black", "w", taille = int(20*coef_hauteur), tag = "Scores Jeu")
     cercle(int(475*coef_largeur), int(50*coef_hauteur), int(20*coef_hauteur), "black", couleurJoueur[0], tag="Scores Jeu")
     texte(int(495*coef_largeur), int(50*coef_hauteur), " : " + str(score[0]), "black", "w", taille = int(20*coef_hauteur), tag = "Scores Jeu")
@@ -142,6 +157,9 @@ def fond_score(score):
     mise_a_jour()
 
 def fleches(direction, x, y):
+    """
+    Affiche les flêches directionnels pour changer les valeurs du rayons dépensé.
+    """
     rectangle(x, y, x+int(25*coef_largeur), y+int(30*coef_hauteur), "black", "red", tag="Taille Jeu")
     if direction == "gauche":
         polygone([x+int(18*coef_largeur), y+int(2*coef_hauteur),x+int(5*coef_largeur), y+int(15*coef_hauteur), x+int( 18*coef_largeur), y+int(28*coef_hauteur)], "darkred", "darkred", tag="Taille Jeu")
@@ -149,6 +167,9 @@ def fleches(direction, x, y):
         polygone([x+int(7*coef_largeur), y+int(2*coef_hauteur),x+int(20*coef_largeur), y+int(15*coef_hauteur), x+int(7*coef_largeur), y+int(28*coef_hauteur)], "darkred", "darkred", tag="Taille Jeu")
 
 def fond_taille():
+    """
+    Affiche le fond de la variante Taille.
+    """
     texte(int(50*coef_largeur), int(695*coef_hauteur), "Montant à poser:", "black", "w", taille=int(20*coef_hauteur), tag="Taille Jeu")
     # Centaines
     fleches("gauche", int(260*coef_largeur), int(680*coef_hauteur))
@@ -168,6 +189,9 @@ def fond_taille():
     mise_a_jour()
 
 def epargne_joueurs(epargne_Vert, epargne_Violet):
+    """
+    Affiche un texte montrant le montant restant de chacuns.
+    """
     efface("epargne")
     texte(int(600*coef_largeur), int(695*coef_hauteur), "Montant", "black", "w", taille=int(20*coef_hauteur), tag="epargne Jeu")
     cercle(int(725*coef_largeur), int(695*coef_hauteur), int(20*coef_hauteur), "black", couleurJoueur[0], tag="epargne Jeu")
@@ -178,6 +202,9 @@ def epargne_joueurs(epargne_Vert, epargne_Violet):
     mise_a_jour()
 
 def variante_score(score, t_sablier):
+    """
+    Affiche le score pendant 2 secondes et arrête le compteur du sablier lors de l'affichage du score.
+    """
     fond_score(score)
     temps = time() + 2
     while time() < temps:
@@ -199,6 +226,9 @@ def variante_score(score, t_sablier):
     return None, None
 
 def variante_taille(x, y, centaine, dizaine, unite):
+    """
+    Affiche le montant que le joueur dépense s'il clique sur l'aire de jeu.
+    """
     efface("centaine")
     efface("dizaine")
     efface("unite")
@@ -222,6 +252,9 @@ def variante_taille(x, y, centaine, dizaine, unite):
     return centaine, dizaine, unite
 
 def variante_terminaison(numero_tour):
+    """
+    Actualise le nombre de tour maximum à 5 tours de plus que le numéro de tour actuel.
+    """
     nb_max_tour = numero_tour + 5
     return nb_max_tour
 
