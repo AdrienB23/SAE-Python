@@ -9,17 +9,12 @@ with open("config.txt") as fichier_1:
     config = fichier_1.read().splitlines()
     config = [x.split(":") for x in config]
 
-largeur_fenetre = int(config[0][-1])
-hauteur_fenetre = int(config[1][-1])
+largeur_fenetre = 1280
+hauteur_fenetre = 720
 coef_largeur = largeur_fenetre/1280
 coef_hauteur = hauteur_fenetre/720
 
-largeur_fenetre = int(config[0][-1])
-hauteur_fenetre = int(config[1][-1])
-coef_largeur = largeur_fenetre/1280
-coef_hauteur = hauteur_fenetre/720
-
-couleurJoueur = [config[3][-1].strip(), config[4][-1].strip()]
+couleurJoueur = [config[1][-1].strip(), config[2][-1].strip()]
 ######################## Fonction d'aspect graphique des différents affichages ###################################################
 
 def fond_menu(): # Affiche le menu du jeu
@@ -30,13 +25,10 @@ def fond_menu(): # Affiche le menu du jeu
     texte(int(400*coef_largeur), int(350*coef_hauteur), "Jouer", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
 
     rectangle(int(650*coef_largeur), int(300*coef_hauteur), int(1050*coef_largeur), int(400*coef_hauteur), "white", "#009382", 5, tag="Menu")
-    texte(int(850*coef_largeur), int(350*coef_hauteur), "Charger Sauv.", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
+    texte(int(850*coef_largeur), int(350*coef_hauteur), "Variantes", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
 
-    rectangle(int(200*coef_largeur), int(450*coef_hauteur), int(600*coef_largeur), int(550*coef_hauteur), "white", "#009382", 5, tag="Menu")
-    texte(int(400*coef_largeur), int(500*coef_hauteur), "Variantes", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
-
-    rectangle(int(650*coef_largeur), int(450*coef_hauteur),int(1050*coef_largeur), int(550*coef_hauteur), "white", "#009382", 5, tag="Menu")
-    texte(int(850*coef_largeur),int(500*coef_hauteur),"Quitter", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
+    rectangle(int(400*coef_largeur), int(450*coef_hauteur),int(800*coef_largeur), int(550*coef_hauteur), "white", "#009382", 5, tag="Menu")
+    texte(int(600*coef_largeur),int(500*coef_hauteur),"Quitter", "white", "center", taille=int(40*coef_hauteur), tag="Menu")
 
     rectangle(int(575*coef_largeur), int(600*coef_hauteur), int(675*coef_largeur), int(700*coef_hauteur), "white", "#009382", 5, tag="Menu")
     image(625, 650, "trophy.png", "center", tag="Menu")
@@ -70,7 +62,6 @@ def fond_classement():
         for x in classement:
             fichier.write(x[0] + " : " + str(x[1]) + "\n")
     texte(640, 400,"\n".join([x[0] + " : " + str(x[1]) for x in classement]), ancrage="center",couleur="white", police="Arial", tag="Classement")
-
     mise_a_jour()
 
 def variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle): # Affiche le menu des variantes pour choisir une ou plusieurs variantes (pour l'instant seul le sablier est disponible)
@@ -280,12 +271,13 @@ def variante_dynamique(liste_cercle_un, liste_cercle_deux, couleur, Obstacle, li
 def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle, Quitter):
     while True:
         x, y, z = attente_clic()
-        if int(200*coef_largeur) <= x <= int(600*coef_largeur) :
+        if int(200*coef_largeur) <= x <= int(600*coef_largeur):
             if int(300*coef_hauteur) <= y <= int(400*coef_hauteur):
                 efface("Menu")
                 fond_jeu()
                 break
-            elif int(450*coef_hauteur) <= y <= int(550*coef_hauteur):
+        elif int(650*coef_largeur) <= x <= int(1050*coef_largeur):
+            if int(300*coef_hauteur) <= y <= int(400*coef_hauteur):
                 efface("Menu")
                 variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle)
                 while True:
@@ -325,7 +317,7 @@ def detection_variante(Sablier, Scores, Terminaison, Taille, Dynamique, Obstacle
                         fond_menu()
                         break
                     variantes(Sablier, Scores, Taille, Dynamique, Terminaison, Obstacle)
-        elif int(650*coef_largeur) <= x <= int(1050*coef_largeur):
+        if int(400*coef_largeur) <= x <= int(800*coef_largeur):
             if int(450*coef_hauteur) <= y <= int(550*coef_hauteur):
                 Quitter = True
                 break
@@ -518,8 +510,8 @@ def main():
             liste_cercle_vert = []
             liste_obstacle = []
             tour, numero_tour = 0, 1
-            rayon = int(config[2][-1])
-            nb_max_tour = int(config[5][-1].strip())
+            rayon = int(config[0][-1])
+            nb_max_tour = int(config[3][-1].strip())
             score=[0, 0]
             inter = 0
             alterner_liste_joueur, b = liste_cercle_violet, liste_cercle_vert
@@ -531,8 +523,8 @@ def main():
                 dizaine = 0
                 unite = 0
                 fond_taille()
-                epargne_vert = int(config[6][-1])
-                epargne_violet = int(config[6][-1])
+                epargne_vert = int(config[4][-1])
+                epargne_violet = int(config[4][-1])
                 epargne_joueurs(epargne_vert, epargne_violet)
             while Retour == False:
                 if numero_tour < nb_max_tour+1:
@@ -540,7 +532,7 @@ def main():
                     detection_tour(tour, numero_tour, nb_max_tour)
                     if Sablier:
                         t = 0
-                        temps = time() + int(config[7][-1])
+                        temps = time() + int(config[5][-1])
                         while time() - t < temps:
                             ev = donne_evenement()
                             mise_a_jour()
@@ -556,12 +548,12 @@ def main():
                                     continue
                                 break
                             elif type_ev == "Touche":
-                                if Scores and touche(ev) == config[9][-1].strip():
+                                if Scores and touche(ev) == config[7][-1].strip():
                                     x, y, t = variante_score(score, t)
                                     if x != None:
                                         break
                                     continue
-                                if Terminaison and detection_terminaison == 0 and touche(ev) == config[8][-1].strip():
+                                if Terminaison and detection_terminaison == 0 and touche(ev) == config[6][-1].strip():
                                     nb_max_tour = variante_terminaison(numero_tour)
                                     detection_terminaison += 1
                                     if x != None:
@@ -586,11 +578,11 @@ def main():
                         if type_ev == 'ClicGauche':
                             x, y = clic_x(ev), clic_y(ev)
                         elif type_ev == 'Touche':
-                            if touche(ev) == config[9][-1].strip():
+                            if touche(ev) == config[7][-1].strip():
                                 x, y = variante_score(score, None) 
                                 if x == None:
                                     continue
-                            elif Terminaison and detection_terminaison == 0 and touche(ev) == config[8][-1].strip():
+                            elif Terminaison and detection_terminaison == 0 and touche(ev) == config[6][-1].strip():
                                 nb_max_tour = variante_terminaison(numero_tour)
                                 detection_terminaison += 1
                                 if x != None:
@@ -615,7 +607,7 @@ def main():
                         if type_ev == 'ClicGauche':
                             x, y = clic_x(ev), clic_y(ev)
                         elif type_ev == 'Touche':
-                            if touche(ev) == config[8][-1].strip():
+                            if touche(ev) == config[6][-1].strip():
                                 nb_max_tour = variante_terminaison(numero_tour)
                                 detection_terminaison += 1
                             else:
@@ -661,9 +653,6 @@ def main():
                         y = int(100*coef_hauteur)+rayon
                     elif int(670*coef_hauteur)-rayon <y <= int(670*coef_hauteur):
                         y = int(670*coef_hauteur)-rayon
-
-                    if tour == 1:
-                        numero_tour += 1
                             
                     intersection_cercle = 0
 
@@ -685,15 +674,10 @@ def main():
                         cerkle(x, y, tour, liste_cercle_vert, liste_cercle_violet, rayon)
 
                         detection_cercle_inscrit(alterner_liste_joueur)
-
-                        if tour == 0 and inter!= 0:
-                            intersection_vert = inter
-                        elif tour == 1 and inter!=0:
-                            intersection_violet = inter
-
+                    
                     score[0] = len(calcul_score(liste_cercle_vert))
                     score[1] = len(calcul_score(liste_cercle_violet))
-                    if numero_tour == nb_max_tour+1 and tour == 1:
+                    if numero_tour == nb_max_tour and tour == 1:
                         if score[0] > score[1]:
                             texte(int(500*coef_largeur), int(50*coef_hauteur),"Le Joueur", "white", "w",  taille=int(24*coef_hauteur), tag="Jeu")
                             cercle(int(670*coef_largeur), int(50*coef_hauteur), int(20*coef_hauteur), "black", couleurJoueur[0], tag="Scores Jeu")
@@ -716,7 +700,9 @@ def main():
                     if Dynamique:
                         variante_dynamique(alterner_liste_joueur, b, couleurJoueur[tour], Obstacle, liste_obstacle)
                         variante_dynamique(b, alterner_liste_joueur, couleurJoueur[(tour+1)%2], Obstacle, liste_obstacle)
-                                
+                    
+                    if tour == 1:
+                        numero_tour += 1            
                     tour = (tour+1) % 2 
 
                     mise_a_jour()
