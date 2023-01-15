@@ -1,0 +1,10 @@
+%x;%y;r;couleur
+50;0;23;red
+0;90;40;blue
+20;80;30;yellow
+100;100;30;orange
+50;50;50;green
+0;0;40;green
+100;0;80;green
+25;25;10;purple
+75;75;20;black
