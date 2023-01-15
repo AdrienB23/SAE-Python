@@ -5,8 +5,6 @@ from math import *
 import string
 from os import path
 
-
-
 with open("configuration.txt") as fichier_1:
     config = fichier_1.read().splitlines()
     config = [x.split(":") for x in config]
